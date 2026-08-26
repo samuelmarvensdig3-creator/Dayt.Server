@@ -1,0 +1,1205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dates</title>
+<meta name="description" content="An invitation, saved just for you.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23241645'/%3E%3Cpath d='M20 35 h60 v30 a8 8 0 0 0 0 16 v9 h-60 v-9 a8 8 0 0 0 0-16 z' fill='none' stroke='%23E8B84B' stroke-width='4'/%3E%3Ctext x='50' y='56' font-family='Georgia,serif' font-style='italic' font-size='22' fill='%23FF4D8D' text-anchor='middle'%3E♥%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,700;1,9..144,600&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#150F2A;
+    --plum:#241645;
+    --plum-2:#2F1B57;
+    --gold:#E8B84B;
+    --rose:#FF4D8D;
+    --cream:#F6F1FF;
+    --lav:#B7A6D9;
+  }
+  *{box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    margin:0;
+    min-height:100vh;
+    background:
+      radial-gradient(circle at 15% 20%, rgba(255,77,141,0.12), transparent 45%),
+      radial-gradient(circle at 85% 80%, rgba(232,184,75,0.10), transparent 45%),
+      linear-gradient(160deg, var(--ink) 0%, var(--plum) 55%, #1a1035 100%);
+    font-family:'Space Grotesk', sans-serif;
+    color:var(--cream);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow-x:hidden;
+    position:relative;
+  }
+  .sparkle{
+    position:fixed;
+    border-radius:50%;
+    background:var(--gold);
+    opacity:0.5;
+    pointer-events:none;
+    animation:drift 12s linear infinite;
+  }
+  @keyframes drift{
+    0%{transform:translateY(0) rotate(0deg);}
+    100%{transform:translateY(-40px) rotate(180deg);}
+  }
+  .stage{
+    width:100%;
+    max-width:480px;
+    margin:32px 16px;
+    position:relative;
+  }
+  .ticket{
+    background:linear-gradient(165deg, var(--plum-2), #22133F);
+    border:1px solid rgba(232,184,75,0.35);
+    border-radius:22px;
+    padding:40px 32px 28px;
+    position:relative;
+    box-shadow:0 30px 60px -20px rgba(0,0,0,0.6), 0 0 0 1px rgba(255,255,255,0.02) inset;
+    min-height:420px;
+  }
+  .ticket::before, .ticket::after{
+    content:"";
+    position:absolute;
+    width:26px; height:26px;
+    background:var(--ink);
+    border-radius:50%;
+    top:50%;
+    transform:translateY(-50%);
+    box-shadow:0 0 0 1px rgba(232,184,75,0.25) inset;
+  }
+  .brandmark{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    margin-bottom:22px;
+  }
+  .brandmark .stub{
+    width:22px;
+    height:22px;
+    border-radius:6px;
+    border:1.5px solid var(--gold);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family:'Fraunces', serif;
+    font-style:italic;
+    font-size:13px;
+    color:var(--rose);
+  }
+  .brandmark .wordmark{
+    font-size:12px;
+    font-weight:700;
+    letter-spacing:0.16em;
+    text-transform:uppercase;
+    color:var(--cream);
+    opacity:0.85;
+  }
+  .eyebrow{
+    text-transform:uppercase;
+    letter-spacing:0.22em;
+    font-size:11px;
+    color:var(--gold);
+    text-align:center;
+    margin-bottom:14px;
+    font-weight:500;
+  }
+  h1{
+    font-family:'Fraunces', serif;
+    font-style:italic;
+    font-weight:600;
+    font-size:clamp(28px, 6vw, 38px);
+    text-align:center;
+    line-height:1.15;
+    margin:0 0 18px;
+    color:var(--cream);
+  }
+  .sub{
+    text-align:center;
+    color:var(--lav);
+    font-size:14.5px;
+    line-height:1.6;
+    margin:0 0 26px;
+  }
+  .sub b{color:var(--cream); font-weight:600;}
+  label{
+    display:block;
+    font-size:11px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--lav);
+    margin:16px 0 6px;
+  }
+  input[type="text"], input[type="month"]{
+    width:100%;
+    padding:12px 14px;
+    border-radius:10px;
+    border:1px solid rgba(255,255,255,0.14);
+    background:rgba(255,255,255,0.04);
+    color:var(--cream);
+    font-family:inherit;
+    font-size:15px;
+    outline:none;
+    transition:border-color .15s ease, background .15s ease;
+  }
+  input::placeholder{color:rgba(246,241,255,0.35);}
+  textarea{
+    width:100%;
+    padding:12px 14px;
+    border-radius:10px;
+    border:1px solid rgba(255,255,255,0.14);
+    background:rgba(255,255,255,0.04);
+    color:var(--cream);
+    font-family:inherit;
+    font-size:14.5px;
+    line-height:1.5;
+    outline:none;
+    resize:vertical;
+    min-height:70px;
+    transition:border-color .15s ease, background .15s ease;
+  }
+  textarea::placeholder{color:rgba(246,241,255,0.35);}
+  textarea:focus{border-color:var(--gold); background:rgba(255,255,255,0.07);}
+  textarea:focus-visible{outline:2px solid var(--gold); outline-offset:2px;}
+  input:focus{border-color:var(--gold); background:rgba(255,255,255,0.07);}
+  input:focus-visible{outline:2px solid var(--gold); outline-offset:2px;}
+  .primary-btn{
+    width:100%;
+    margin-top:26px;
+    padding:14px;
+    border-radius:12px;
+    border:none;
+    background:linear-gradient(135deg, var(--rose), #E8437E);
+    color:#fff;
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:700;
+    font-size:15px;
+    letter-spacing:0.02em;
+    cursor:pointer;
+    transition:transform .12s ease, box-shadow .12s ease;
+    box-shadow:0 10px 24px -8px rgba(255,77,141,0.55);
+  }
+  .primary-btn:hover{transform:translateY(-1px);}
+  .primary-btn:focus-visible{outline:2px solid var(--gold); outline-offset:2px;}
+  .primary-btn:disabled{opacity:0.4; cursor:not-allowed; transform:none;}
+
+  .decision-zone{
+    position:relative;
+    height:170px;
+    margin-top:8px;
+  }
+  .yes-btn, .no-btn{
+    position:absolute;
+    padding:14px 30px;
+    border-radius:999px;
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:700;
+    font-size:16px;
+    border:none;
+    cursor:pointer;
+  }
+  .yes-btn{
+    left:50%;
+    top:50%;
+    transform:translate(-50%,-50%);
+    background:linear-gradient(135deg, var(--gold), #F2CE72);
+    color:#241645;
+    box-shadow:0 10px 26px -8px rgba(232,184,75,0.55);
+    z-index:2;
+  }
+  .yes-btn:hover{transform:translate(-50%,-50%) scale(1.04);}
+  .yes-btn:focus-visible{outline:2px solid #fff; outline-offset:2px;}
+  .no-btn{
+    background:rgba(255,255,255,0.06);
+    color:var(--lav);
+    border:1px solid rgba(255,255,255,0.18);
+    transition:top .28s ease, left .28s ease, opacity .2s ease;
+    z-index:1;
+  }
+  .no-btn:focus-visible{outline:2px solid var(--rose); outline-offset:2px;}
+
+  .taunt{
+    text-align:center;
+    min-height:20px;
+    color:var(--rose);
+    font-size:13px;
+    margin-top:10px;
+    font-style:italic;
+  }
+
+  .perforation{
+    border-top:1px dashed rgba(232,184,75,0.3);
+    margin:26px -32px 18px;
+  }
+  .fineprint{
+    text-align:center;
+    font-size:11.5px;
+    color:rgba(183,166,217,0.7);
+    letter-spacing:0.03em;
+  }
+
+  .calendar{
+    margin-top:6px;
+  }
+  .cal-grid{
+    display:grid;
+    grid-template-columns:repeat(7, 1fr);
+    gap:6px;
+    margin-top:10px;
+  }
+  .cal-dow{
+    text-align:center;
+    font-size:10px;
+    color:var(--lav);
+    letter-spacing:0.06em;
+  }
+  .cal-day{
+    aspect-ratio:1;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    border-radius:9px;
+    background:rgba(255,255,255,0.04);
+    border:1px solid rgba(255,255,255,0.08);
+    color:var(--cream);
+    font-size:13.5px;
+    cursor:pointer;
+    transition:background .12s ease, transform .12s ease;
+  }
+  .cal-day:hover{background:rgba(232,184,75,0.18); transform:translateY(-1px);}
+  .cal-day:focus-visible{outline:2px solid var(--gold);}
+  .cal-day.empty{visibility:hidden; cursor:default;}
+  .cal-day.chosen{background:var(--gold); color:#241645; font-weight:700;}
+
+  .confirm-icon{
+    text-align:center;
+    font-size:40px;
+    margin-bottom:6px;
+  }
+  .confirm-detail{
+    background:rgba(255,255,255,0.05);
+    border-radius:14px;
+    padding:16px 18px;
+    margin-top:18px;
+  }
+  .confirm-row{
+    display:flex;
+    justify-content:space-between;
+    font-size:14px;
+    padding:6px 0;
+    border-bottom:1px solid rgba(255,255,255,0.06);
+  }
+  .confirm-row:last-child{border-bottom:none;}
+  .confirm-row span:first-child{color:var(--lav);}
+  .confirm-row span:last-child{color:var(--cream); font-weight:600; text-align:right;}
+
+  .plan-quote{
+    margin-top:18px;
+    padding:16px 18px;
+    border-left:2px solid var(--gold);
+    background:rgba(232,184,75,0.06);
+    border-radius:0 12px 12px 0;
+  }
+  .plan-label{
+    text-transform:uppercase;
+    letter-spacing:0.1em;
+    font-size:10px;
+    color:var(--gold);
+    margin-bottom:6px;
+  }
+  .plan-text{
+    font-family:'Fraunces', serif;
+    font-style:italic;
+    font-size:15px;
+    line-height:1.55;
+    color:var(--cream);
+  }
+  .link-btn{
+    display:block;
+    width:100%;
+    text-align:center;
+    margin-top:18px;
+    background:none;
+    border:none;
+    color:var(--lav);
+    font-size:12.5px;
+    text-decoration:underline;
+    cursor:pointer;
+    font-family:inherit;
+  }
+  .link-btn:hover{color:var(--cream);}
+
+  .tab-row{
+    display:flex;
+    gap:6px;
+    background:rgba(255,255,255,0.04);
+    border-radius:12px;
+    padding:4px;
+    margin-bottom:6px;
+  }
+  .tab-btn{
+    flex:1;
+    padding:10px;
+    border-radius:9px;
+    border:none;
+    background:transparent;
+    color:var(--lav);
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:600;
+    font-size:13.5px;
+    cursor:pointer;
+    transition:background .15s ease, color .15s ease;
+  }
+  .tab-btn.active{
+    background:var(--gold);
+    color:var(--ink);
+  }
+  .tab-btn:focus-visible{outline:2px solid var(--gold); outline-offset:2px;}
+
+  .invite-card{
+    background:rgba(255,255,255,0.04);
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:14px;
+    padding:14px 16px;
+    margin-top:12px;
+  }
+  .invite-card-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    gap:10px;
+  }
+  .invite-card-to{
+    font-family:'Fraunces', serif;
+    font-style:italic;
+    font-size:16px;
+    color:var(--cream);
+  }
+  .invite-card-month{
+    font-size:11.5px;
+    color:var(--lav);
+    white-space:nowrap;
+  }
+  .invite-card-place{
+    font-size:13px;
+    color:var(--lav);
+    margin-top:2px;
+  }
+  .invite-card-status{
+    display:inline-block;
+    margin-top:10px;
+    padding:5px 11px;
+    border-radius:999px;
+    font-size:11.5px;
+    font-weight:600;
+    letter-spacing:0.02em;
+  }
+  .invite-card-status.pending{
+    background:rgba(232,184,75,0.14);
+    color:var(--gold);
+  }
+  .invite-card-status.confirmed{
+    background:rgba(126,214,165,0.16);
+    color:#7ED6A5;
+  }
+
+  .hidden{display:none !important;}
+
+  @media (prefers-reduced-motion: reduce){
+    .no-btn{transition:none;}
+    .sparkle{animation:none;}
+  }
+
+  .ticket{overflow:hidden;}
+  button:focus-visible{outline-offset:3px;}
+  @media (max-width:420px){
+    .ticket{padding:32px 22px 24px;}
+    .perforation{margin-left:-22px;margin-right:-22px;}
+    .decision-zone{height:180px;}
+    .yes-btn,.no-btn{padding:13px 22px;font-size:15px;}
+  }
+</style>
+</head>
+
+<body>
+<div class="stage">
+  <div class="ticket">
+
+    <div id="view-welcome">
+      <div class="brandmark"><span class="stub">♥</span><span class="wordmark">Dates</span></div>
+      <div class="eyebrow">✦ Welcome ✦</div>
+      <h1 id="welcome-headline">Sign in to send invitations</h1>
+      <p class="sub">Your account keeps track of everyone you've invited, and whether they've said when.</p>
+
+      <div class="tab-row">
+        <button type="button" class="tab-btn active" id="tab-login">Log in</button>
+        <button type="button" class="tab-btn" id="tab-signup">Sign up</button>
+      </div>
+
+      <div id="login-form">
+        <label for="login-username">Username</label>
+        <input type="text" id="login-username" maxlength="60" autocomplete="username" placeholder="yourname">
+
+        <label for="login-password">Password</label>
+        <input type="password" id="login-password" maxlength="200" autocomplete="current-password" placeholder="••••••••">
+
+        <button class="primary-btn" id="btn-login" type="button">Log in</button>
+      </div>
+
+      <div id="signup-form" class="hidden">
+        <label for="signup-displayname">Your name</label>
+        <input type="text" id="signup-displayname" maxlength="60" placeholder="What should we call you?">
+
+        <label for="signup-username">Choose a username</label>
+        <input type="text" id="signup-username" maxlength="60" autocomplete="username" placeholder="yourname">
+
+        <label for="signup-password">Choose a password</label>
+        <input type="password" id="signup-password" maxlength="200" autocomplete="new-password" placeholder="At least 6 characters">
+
+        <button class="primary-btn" id="btn-signup" type="button">Create account</button>
+      </div>
+
+      <p class="fineprint" id="auth-status">&nbsp;</p>
+    </div>
+
+    <div id="view-portal" class="hidden">
+      <div class="brandmark"><span class="stub">♥</span><span class="wordmark">Dates</span></div>
+      <div class="eyebrow">✦ Your invitations ✦</div>
+      <h1 id="portal-headline">Welcome back</h1>
+      <p class="sub" id="portal-sub">Here's everyone you've invited.</p>
+
+      <div id="portal-list"></div>
+      <p class="fineprint hidden" id="portal-empty">You haven't sent an invitation yet.</p>
+
+      <button class="primary-btn" id="btn-portal-new" type="button">+ New invitation</button>
+      <button class="link-btn" id="btn-logout">Log out</button>
+    </div>
+
+    <div id="view-setup" class="hidden">
+      <div class="brandmark"><span class="stub">♥</span><span class="wordmark">Dates</span></div>
+      <div class="eyebrow">✦ Create an invitation ✦</div>
+      <h1>Set the scene</h1>
+      <p class="sub">Choose the month and place. They'll pick the day that fits.</p>
+
+      <label for="in-from">Your name</label>
+      <input type="text" id="in-from" maxlength="60" placeholder="Who's asking?">
+
+      <label for="in-to">Their name (optional)</label>
+      <input type="text" id="in-to" maxlength="60" placeholder="Who's this for?">
+
+      <label for="in-place">Place</label>
+      <input type="text" id="in-place" maxlength="100" placeholder="Where should this happen?">
+
+      <label for="in-month">Month</label>
+      <input type="month" id="in-month">
+
+      <label for="in-plan">What's the plan? (optional)</label>
+      <textarea id="in-plan" maxlength="500" placeholder="A little preview of the date..."></textarea>
+
+      <button class="primary-btn" id="btn-create" type="button">Create invitation</button>
+      <button class="link-btn" id="btn-back-portal">← Back to your invitations</button>
+    </div>
+
+    <div id="view-created" class="hidden">
+      <div class="brandmark"><span class="stub">♥</span><span class="wordmark">Dates</span></div>
+      <div class="eyebrow">✦ Invitation ready ✦</div>
+      <h1>Send the link</h1>
+      <p class="sub" id="created-sub"></p>
+      <div class="confirm-detail">
+        <div class="confirm-row"><span>From</span><span id="created-from">—</span></div>
+        <div class="confirm-row"><span>To</span><span id="created-to">—</span></div>
+        <div class="confirm-row"><span>Where</span><span id="created-place">—</span></div>
+        <div class="confirm-row"><span>Month</span><span id="created-month">—</span></div>
+      </div>
+      <button class="primary-btn" id="btn-copy">Copy invitation link</button>
+      <button class="primary-btn" id="btn-share" type="button" style="margin-top:10px;">Share invitation</button>
+      <button class="link-btn" id="btn-open">Open invitation</button>
+      <button class="link-btn" id="btn-new">Create another invitation</button>
+      <button class="link-btn" id="btn-created-portal">Back to your invitations</button>
+      <p class="fineprint" id="copy-status"></p>
+      <textarea id="share-link" readonly aria-label="Invitation link"
+        style="margin-top:10px;display:none;min-height:82px;width:100%;"></textarea>
+    </div>
+
+    <div id="view-ask" class="hidden">
+      <div class="brandmark"><span class="stub">♥</span><span class="wordmark">Dates</span></div>
+      <div class="eyebrow">✦ You've been invited ✦</div>
+      <h1 id="ask-headline">Will you meet me?</h1>
+      <p class="sub" id="ask-sub"></p>
+
+      <div class="decision-zone" id="decision-zone">
+        <button class="yes-btn" id="btn-yes" type="button">Yes ❤️</button>
+        <button class="no-btn" id="btn-no" type="button">No</button>
+      </div>
+      <p class="taunt" id="taunt"></p>
+
+      <div class="perforation"></div>
+      <p class="fineprint">A seat has already been saved for you.</p>
+    </div>
+
+    <div id="view-calendar" class="hidden">
+      <div class="brandmark"><span class="stub">♥</span><span class="wordmark">Dates</span></div>
+      <div class="eyebrow">✦ Almost there ✦</div>
+      <h1>Pick your day</h1>
+      <p class="sub" id="cal-sub"></p>
+      <div class="plan-quote hidden" id="plan-quote">
+        <div class="plan-label">The plan</div>
+        <div class="plan-text" id="plan-text"></div>
+      </div>
+      <div class="calendar">
+        <div class="cal-grid" id="cal-dow-row"></div>
+        <div class="cal-grid" id="cal-grid"></div>
+      </div>
+      <button class="link-btn" id="btn-back-ask">Back</button>
+    </div>
+
+    <div id="view-confirm" class="hidden">
+      <div class="brandmark"><span class="stub">♥</span><span class="wordmark">Dates</span></div>
+      <div class="confirm-icon">🎟️</div>
+      <h1>It's a date</h1>
+      <p class="sub" id="confirm-sub">Consider it locked in.</p>
+      <div class="confirm-detail">
+        <div class="confirm-row"><span>With</span><span id="conf-with">—</span></div>
+        <div class="confirm-row"><span>Where</span><span id="conf-where">—</span></div>
+        <div class="confirm-row"><span>When</span><span id="conf-when">—</span></div>
+      </div>
+      <div class="plan-quote hidden" id="plan-quote-confirm">
+        <div class="plan-label">The plan</div>
+        <div class="plan-text" id="plan-text-confirm"></div>
+      </div>
+      <p class="fineprint">This confirmation is stored in this browser. The invitation link remains shareable.</p>
+      <button class="link-btn" id="btn-change-date">Choose another date</button>
+    </div>
+
+    <div id="view-declined" class="hidden">
+      <div class="brandmark"><span class="stub">♥</span><span class="wordmark">Dates</span></div>
+      <div class="eyebrow">✦ Maybe next time ✦</div>
+      <h1>No hard feelings.</h1>
+      <p class="sub" id="declined-sub"></p>
+      <button class="primary-btn" id="btn-reconsider">Actually... maybe yes</button>
+    </div>
+
+    <div id="view-error" class="hidden">
+      <div class="brandmark"><span class="stub">♥</span><span class="wordmark">Dates</span></div>
+      <div class="eyebrow">✦ Oops ✦</div>
+      <h1>That invitation isn't valid.</h1>
+      <p class="sub">The link may be incomplete or corrupted. Ask the sender to create a fresh invitation.</p>
+    </div>
+
+  </div>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  // If this page is served by the same server (recommended — see server.js,
+  // which now serves this file directly), leave this as an empty string:
+  // requests will go to whatever address is currently in the browser bar.
+  // Only hardcode a full URL here if you're opening this file locally
+  // instead of visiting your server's address directly.
+  const API_BASE = "";
+  const $ = id => document.getElementById(id);
+
+  const views = ["welcome","portal","setup","created","ask","calendar","confirm","declined","error"]
+    .reduce((o, key) => (o[key] = $("view-" + key), o), {});
+
+  const fields = {
+    from: $("in-from"),
+    to: $("in-to"),
+    place: $("in-place"),
+    month: $("in-month"),
+    plan: $("in-plan")
+  };
+
+  let invite = null;
+  let selectedDate = null;
+  let currentId = null;
+  let pollTimer = null;
+
+  async function apiCreateInvite(data) {
+    const res = await fetch(API_BASE + "/api/invites", {
+      method: "POST",
+      headers: Object.assign({ "Content-Type": "application/json" }, authHeaders()),
+      body: JSON.stringify(data)
+    });
+    if (!res.ok) throw new Error((await res.json()).error || "Could not create invitation");
+    return res.json(); // { id }
+  }
+
+  async function apiGetInvite(id) {
+    const res = await fetch(API_BASE + "/api/invites/" + id);
+    if (!res.ok) throw new Error((await res.json()).error || "Invitation not found");
+    return res.json();
+  }
+
+  async function apiSubmitResponse(id, date) {
+    const res = await fetch(API_BASE + "/api/invites/" + id + "/response", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(date)
+    });
+    if (!res.ok) throw new Error((await res.json()).error || "Could not save your answer");
+    return res.json();
+  }
+
+  function stopPolling() {
+    if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
+  }
+
+  function startPollingForResponse(id) {
+    stopPolling();
+    pollTimer = setInterval(async () => {
+      try {
+        const data = await apiGetInvite(id);
+        if (data.response) {
+          stopPolling();
+          invite = data;
+          renderConfirm(data.response);
+        }
+      } catch (e) {
+        // server hiccup or offline — just try again on the next tick
+        console.warn("Polling check failed:", e.message);
+      }
+    }, 4000);
+  }
+
+  // ---- Auth ----
+  const AUTH_KEY = "dates_auth"; // { token, userId, displayName }
+
+  function getAuth() {
+    try { return JSON.parse(localStorage.getItem(AUTH_KEY)); }
+    catch (e) { return null; }
+  }
+  function setAuth(auth) {
+    localStorage.setItem(AUTH_KEY, JSON.stringify(auth));
+  }
+  function clearAuth() {
+    localStorage.removeItem(AUTH_KEY);
+  }
+  function authHeaders() {
+    const auth = getAuth();
+    return auth ? { "Authorization": "Bearer " + auth.token } : {};
+  }
+
+  async function apiSignup(displayName, username, password) {
+    const res = await fetch(API_BASE + "/api/signup", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ displayName, username, password })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || "Could not create account");
+    return data;
+  }
+  async function apiLogin(username, password) {
+    const res = await fetch(API_BASE + "/api/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username, password })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || "Could not log in");
+    return data;
+  }
+  async function apiLogout() {
+    try {
+      await fetch(API_BASE + "/api/logout", { method: "POST", headers: authHeaders() });
+    } catch (e) { /* fine — clearing locally is what matters */ }
+  }
+  async function apiMyInvites() {
+    const res = await fetch(API_BASE + "/api/users/me/invites", { headers: authHeaders() });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || "Could not load your invitations");
+    return data.invites;
+  }
+
+  $("tab-login").addEventListener("click", () => {
+    $("tab-login").classList.add("active");
+    $("tab-signup").classList.remove("active");
+    $("login-form").classList.remove("hidden");
+    $("signup-form").classList.add("hidden");
+    $("auth-status").textContent = "\u00A0";
+  });
+  $("tab-signup").addEventListener("click", () => {
+    $("tab-signup").classList.add("active");
+    $("tab-login").classList.remove("active");
+    $("signup-form").classList.remove("hidden");
+    $("login-form").classList.add("hidden");
+    $("auth-status").textContent = "\u00A0";
+  });
+
+  $("btn-login").addEventListener("click", async () => {
+    const username = clean($("login-username").value, 60);
+    const password = $("login-password").value;
+    if (!username || !password) {
+      $("auth-status").textContent = "Enter your username and password.";
+      return;
+    }
+    $("btn-login").disabled = true;
+    $("btn-login").textContent = "Logging in...";
+    try {
+      const data = await apiLogin(username, password);
+      setAuth(data);
+      await enterPortal();
+    } catch (e) {
+      $("auth-status").textContent = e.message;
+    } finally {
+      $("btn-login").disabled = false;
+      $("btn-login").textContent = "Log in";
+    }
+  });
+
+  $("btn-signup").addEventListener("click", async () => {
+    const displayName = clean($("signup-displayname").value, 60);
+    const username = clean($("signup-username").value, 60);
+    const password = $("signup-password").value;
+    if (!username || !password) {
+      $("auth-status").textContent = "Choose a username and password.";
+      return;
+    }
+    $("btn-signup").disabled = true;
+    $("btn-signup").textContent = "Creating account...";
+    try {
+      const data = await apiSignup(displayName, username, password);
+      setAuth(data);
+      await enterPortal();
+    } catch (e) {
+      $("auth-status").textContent = e.message;
+    } finally {
+      $("btn-signup").disabled = false;
+      $("btn-signup").textContent = "Create account";
+    }
+  });
+
+  $("btn-logout").addEventListener("click", async () => {
+    await apiLogout();
+    clearAuth();
+    invite = null;
+    currentId = null;
+    show("welcome");
+  });
+
+  $("btn-portal-new").addEventListener("click", () => {
+    Object.values(fields).forEach(f => f.value = "");
+    validateSetup();
+    show("setup");
+  });
+  $("btn-back-portal").addEventListener("click", () => renderPortal());
+  $("btn-created-portal").addEventListener("click", () => { stopPolling(); renderPortal(); });
+
+  function statusLabel(inv) {
+    if (!inv.response) return { text: "Awaiting reply", cls: "pending" };
+    const d = inv.response;
+    return { text: "Confirmed — " + dateLabel(d), cls: "confirmed" };
+  }
+
+  async function renderPortal() {
+    const auth = getAuth();
+    $("portal-headline").textContent = auth && auth.displayName ? `Welcome back, ${auth.displayName}` : "Welcome back";
+    show("portal");
+
+    const list = $("portal-list");
+    list.innerHTML = "";
+    $("portal-empty").classList.add("hidden");
+
+    try {
+      const invites = await apiMyInvites();
+      if (!invites.length) {
+        $("portal-empty").classList.remove("hidden");
+        return;
+      }
+      invites.forEach(inv => {
+        const card = document.createElement("div");
+        card.className = "invite-card";
+        const status = statusLabel(inv);
+        card.innerHTML =
+          `<div class="invite-card-top">
+            <span class="invite-card-to">${escapeHtml(inv.to || "Someone lovely")}</span>
+            <span class="invite-card-month">${escapeHtml(monthLabel(inv.month))}</span>
+          </div>
+          <div class="invite-card-place">${escapeHtml(inv.place)}</div>
+          <span class="invite-card-status ${status.cls}">${status.text}</span>`;
+        list.appendChild(card);
+      });
+    } catch (e) {
+      // token likely expired — send them back to log in
+      clearAuth();
+      show("welcome");
+      $("auth-status").textContent = "Your session expired — please log in again.";
+    }
+  }
+
+  async function enterPortal() {
+    await renderPortal();
+  }
+
+  function escapeHtml(str) {
+    const div = document.createElement("div");
+    div.textContent = String(str == null ? "" : str);
+    return div.innerHTML;
+  }
+
+  function show(name) {
+    Object.values(views).forEach(v => v.classList.add("hidden"));
+    views[name].classList.remove("hidden");
+  }
+
+  function clean(value, max) {
+    return String(value || "").trim().slice(0, max);
+  }
+
+  function validMonth(value) {
+    return /^\d{4}-(0[1-9]|1[0-2])$/.test(String(value || ""));
+  }
+
+  function monthLabel(value) {
+    const [year, month] = value.split("-").map(Number);
+    return new Intl.DateTimeFormat(undefined, {
+      month: "long",
+      year: "numeric"
+    }).format(new Date(year, month - 1, 1));
+  }
+
+  function dateLabel(date) {
+    return new Intl.DateTimeFormat(undefined, {
+      weekday: "long",
+      month: "long",
+      day: "numeric",
+      year: "numeric"
+    }).format(new Date(date.year, date.month - 1, date.day));
+  }
+
+  function validateSetup() {
+    // Keep the button usable on iPhone/iPad file previews, where the
+    // <input type="month"> change/input event can behave differently.
+    $("btn-create").disabled = false;
+  }
+
+  Object.values(fields).forEach(field => {
+    field.addEventListener("input", validateSetup);
+    field.addEventListener("change", validateSetup);
+  });
+
+  $("btn-create").addEventListener("click", async function () {
+    const btn = $("btn-create");
+    try {
+      const from = clean(fields.from.value, 60);
+      const to = clean(fields.to.value, 60);
+      const place = clean(fields.place.value, 100);
+      const month = String(fields.month.value || "");
+      const plan = clean(fields.plan.value, 500);
+
+      if (!from || !place || !validMonth(month)) {
+        alert("Please enter your name, place, and month.");
+        return;
+      }
+
+      btn.disabled = true;
+      btn.textContent = "Creating...";
+
+      const { id } = await apiCreateInvite({ from, to, place, month, plan });
+      currentId = id;
+      invite = { from, to, place, month, plan, createdAt: Date.now() };
+
+      const url = location.href.split("?")[0] + "?id=" + id;
+
+      $("created-from").textContent = from;
+      $("created-to").textContent = to || "Anyone you send it to";
+      $("created-place").textContent = place;
+      $("created-month").textContent = monthLabel(month);
+      $("created-sub").textContent =
+        to ? "Your invitation for " + to + " is ready."
+           : "Your invitation is ready to share.";
+
+      $("btn-copy").dataset.url = url;
+
+      const shareBox = $("share-link");
+      if (shareBox) {
+        shareBox.value = url;
+        shareBox.style.display = "block";
+      }
+
+      const status = $("copy-status");
+      if (status) {
+        status.textContent =
+          "Copy the link below and send it. This page will update on its own the moment they pick a day.";
+      }
+
+      show("created");
+      startPollingForResponse(id);
+    } catch (error) {
+      console.error("CREATE INVITATION ERROR:", error);
+      if (error.message === "Please log in again") {
+        clearAuth();
+        show("welcome");
+        $("auth-status").textContent = "Your session expired — please log in again.";
+      } else {
+        alert("Couldn't reach the server to create the invitation. Check the connection and try again.\n\n(" + error.message + ")");
+      }
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "Create invitation";
+    }
+  });
+
+  $("btn-copy").addEventListener("click", function () {
+    const url = $("btn-copy").dataset.url || "";
+    const box = $("share-link");
+
+    if (box) {
+      box.value = url;
+      box.style.display = "block";
+      box.focus();
+      box.select();
+    }
+
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(url).then(function () {
+        $("copy-status").textContent = "Copied! Send it to your person. ❤️";
+      }).catch(function () {
+        $("copy-status").textContent = "The link is shown below — copy it manually.";
+      });
+    } else {
+      $("copy-status").textContent = "The link is shown below — copy it manually.";
+    }
+  });
+
+  $("btn-share").addEventListener("click", async () => {
+    const url = $("btn-copy").dataset.url;
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: "Dates",
+          text: "You've got an invitation. ❤️",
+          url: url
+        });
+        $("copy-status").textContent = "Invitation shared.";
+      } catch (e) {
+        if (e.name !== "AbortError") $("copy-status").textContent = url;
+      }
+    } else {
+      $("share-link").focus();
+      $("share-link").select();
+      $("copy-status").textContent =
+        "Direct sharing isn't available here. Copy the link below.";
+    }
+  });
+
+  $("btn-open").addEventListener("click", () => {
+    const url = $("btn-copy").dataset.url;
+    location.href = url;
+  });
+
+  $("btn-new").addEventListener("click", () => {
+    stopPolling();
+    Object.values(fields).forEach(f => f.value = "");
+    validateSetup();
+    show("setup");
+  });
+
+  const taunts = [
+    "Okay, I respect the honesty.",
+    "That was a very decisive no.",
+    "Fair enough. 😭",
+    "No pressure. Literally.",
+    "Maybe another day?"
+  ];
+
+  function renderAsk(data) {
+    $("ask-headline").textContent =
+      data.to ? `${data.to}, will you meet me?` : "Will you meet me?";
+
+    $("ask-sub").textContent =
+      `${data.from} is inviting you to ${data.place}, sometime in ${monthLabel(data.month)}.`;
+
+    $("taunt").textContent = "";
+    $("btn-no").style.left = "68%";
+    $("btn-no").style.top = "50%";
+    $("btn-no").style.transform = "translate(-50%,-50%)";
+
+    show("ask");
+  }
+
+  $("btn-no").addEventListener("click", () => {
+    $("taunt").textContent =
+      taunts[Math.floor(Math.random() * taunts.length)];
+
+    setTimeout(() => {
+      $("declined-sub").textContent =
+        `${invite.from} will survive. Probably. If you change your mind, the invitation is still here.`;
+      show("declined");
+    }, 350);
+  });
+
+  $("btn-yes").addEventListener("click", () => renderCalendar(invite));
+
+  function renderCalendar(data) {
+    const [year, month] = data.month.split("-").map(Number);
+
+    $("cal-sub").textContent =
+      `Somewhere in ${monthLabel(data.month)} — tap the day that works.`;
+
+    if (data.plan) {
+      $("plan-text").textContent = data.plan;
+      $("plan-quote").classList.remove("hidden");
+    } else {
+      $("plan-quote").classList.add("hidden");
+    }
+
+    const dows = ["S","M","T","W","T","F","S"];
+    $("cal-dow-row").innerHTML = "";
+
+    dows.forEach(day => {
+      const el = document.createElement("div");
+      el.className = "cal-dow";
+      el.textContent = day;
+      $("cal-dow-row").appendChild(el);
+    });
+
+    const grid = $("cal-grid");
+    grid.innerHTML = "";
+
+    const firstDow = new Date(year, month - 1, 1).getDay();
+    const daysInMonth = new Date(year, month, 0).getDate();
+
+    for (let i = 0; i < firstDow; i++) {
+      const empty = document.createElement("div");
+      empty.className = "cal-day empty";
+      grid.appendChild(empty);
+    }
+
+    for (let day = 1; day <= daysInMonth; day++) {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "cal-day";
+      button.textContent = day;
+
+      button.addEventListener("click", () => {
+        selectedDate = { day, month, year };
+
+        grid.querySelectorAll(".chosen")
+          .forEach(el => el.classList.remove("chosen"));
+
+        button.classList.add("chosen");
+
+        const existing = $("date-confirm");
+        if (existing) existing.remove();
+
+        const confirmButton = document.createElement("button");
+        confirmButton.id = "date-confirm";
+        confirmButton.type = "button";
+        confirmButton.className = "primary-btn";
+        confirmButton.textContent =
+          `Confirm ${dateLabel(selectedDate)}`;
+
+        confirmButton.addEventListener("click", async () => {
+          if (!selectedDate) return;
+
+          confirmButton.disabled = true;
+          confirmButton.textContent = "Saving...";
+
+          try {
+            const updated = await apiSubmitResponse(currentId, selectedDate);
+            invite = updated;
+            renderConfirm(updated.response);
+          } catch (error) {
+            console.error("SUBMIT RESPONSE ERROR:", error);
+            alert("Couldn't save your answer — check the connection and try again.\n\n(" + error.message + ")");
+            confirmButton.disabled = false;
+            confirmButton.textContent = `Confirm ${dateLabel(selectedDate)}`;
+          }
+        });
+
+        $("view-calendar").appendChild(confirmButton);
+      });
+
+      grid.appendChild(button);
+    }
+
+    selectedDate = null;
+    show("calendar");
+  }
+
+  function renderConfirm(date) {
+    $("conf-with").textContent = invite.from;
+    $("conf-where").textContent = invite.place;
+    $("conf-when").textContent = dateLabel(date);
+
+    $("confirm-sub").textContent =
+      `${invite.from} will be counting the days.`;
+
+    if (invite.plan) {
+      $("plan-text-confirm").textContent = invite.plan;
+      $("plan-quote-confirm").classList.remove("hidden");
+    } else {
+      $("plan-quote-confirm").classList.add("hidden");
+    }
+
+    show("confirm");
+  }
+
+  $("btn-back-ask").addEventListener("click", () => renderAsk(invite));
+  $("btn-change-date").addEventListener("click", () => renderCalendar(invite));
+  $("btn-reconsider").addEventListener("click", () => renderAsk(invite));
+
+  function loadInvitationFromUrl() {
+    const params = new URLSearchParams(location.search);
+    const id = params.get("id");
+
+    if (!id) return false;
+
+    currentId = id;
+    show("setup"); // brief neutral state while we fetch
+
+    apiGetInvite(id)
+      .then(data => {
+        if (
+          !data ||
+          typeof data.from !== "string" ||
+          typeof data.place !== "string" ||
+          !validMonth(data.month)
+        ) {
+          throw new Error("Invalid invitation");
+        }
+
+        invite = data;
+
+        if (data.response) {
+          renderConfirm(data.response);
+        } else {
+          renderAsk(invite);
+        }
+      })
+      .catch(error => {
+        console.error("Invalid or unreachable invitation link:", error);
+        show("error");
+      });
+
+    return true;
+  }
+
+  function init() {
+    validateSetup();
+
+    if (loadInvitationFromUrl()) return; // recipient link — no login needed
+
+    const auth = getAuth();
+    if (auth && auth.token) {
+      renderPortal();
+    } else {
+      show("welcome");
+    }
+  }
+
+  init();
+})();
+</script>
+</body>
+
+</html>
