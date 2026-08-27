@@ -417,6 +417,36 @@
 
   .ticket{overflow:hidden;}
   button:focus-visible{outline-offset:3px;}
+
+  .lang-toggle{
+    position:absolute;
+    top:16px;
+    right:16px;
+    display:flex;
+    gap:4px;
+    background:rgba(255,255,255,0.05);
+    border-radius:8px;
+    padding:3px;
+    z-index:5;
+  }
+  .lang-btn{
+    padding:5px 9px;
+    border-radius:6px;
+    border:none;
+    background:transparent;
+    color:var(--lav);
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:600;
+    font-size:11px;
+    letter-spacing:0.03em;
+    cursor:pointer;
+  }
+  .lang-btn.active{
+    background:var(--gold);
+    color:var(--ink);
+  }
+  .lang-btn:focus-visible{outline:2px solid var(--gold); outline-offset:2px;}
+
   @media (max-width:420px){
     .ticket{padding:32px 22px 24px;}
     .perforation{margin-left:-22px;margin-right:-22px;}
@@ -430,38 +460,43 @@
 <div class="stage">
   <div class="ticket">
 
+    <div class="lang-toggle" role="group" aria-label="Language">
+      <button type="button" class="lang-btn" id="lang-en">EN</button>
+      <button type="button" class="lang-btn" id="lang-fr">FR</button>
+    </div>
+
     <div id="view-welcome">
       <div class="brandmark"><span class="stub">♥</span><span class="wordmark">Dates</span></div>
-      <div class="eyebrow">✦ Welcome ✦</div>
-      <h1 id="welcome-headline">Sign in to send invitations</h1>
-      <p class="sub">Your account keeps track of everyone you've invited, and whether they've said when.</p>
+      <div class="eyebrow" data-i18n="welcome.eyebrow">✦ Welcome ✦</div>
+      <h1 id="welcome-headline" data-i18n="welcome.headline">Sign in to send invitations</h1>
+      <p class="sub" data-i18n="welcome.sub">Your account keeps track of everyone you've invited, and whether they've said when.</p>
 
       <div class="tab-row">
-        <button type="button" class="tab-btn active" id="tab-login">Log in</button>
-        <button type="button" class="tab-btn" id="tab-signup">Sign up</button>
+        <button type="button" class="tab-btn active" id="tab-login" data-i18n="welcome.tabLogin">Log in</button>
+        <button type="button" class="tab-btn" id="tab-signup" data-i18n="welcome.tabSignup">Sign up</button>
       </div>
 
       <div id="login-form">
-        <label for="login-username">Username</label>
-        <input type="text" id="login-username" maxlength="60" autocomplete="username" placeholder="yourname">
+        <label for="login-username" data-i18n="welcome.username">Username</label>
+        <input type="text" id="login-username" maxlength="60" autocomplete="username" data-i18n-ph="welcome.usernamePh" placeholder="yourname">
 
-        <label for="login-password">Password</label>
+        <label for="login-password" data-i18n="welcome.password">Password</label>
         <input type="password" id="login-password" maxlength="200" autocomplete="current-password" placeholder="••••••••">
 
-        <button class="primary-btn" id="btn-login" type="button">Log in</button>
+        <button class="primary-btn" id="btn-login" type="button" data-i18n="welcome.tabLogin">Log in</button>
       </div>
 
       <div id="signup-form" class="hidden">
-        <label for="signup-displayname">Your name</label>
-        <input type="text" id="signup-displayname" maxlength="60" placeholder="What should we call you?">
+        <label for="signup-displayname" data-i18n="welcome.yourName">Your name</label>
+        <input type="text" id="signup-displayname" maxlength="60" data-i18n-ph="welcome.yourNamePh" placeholder="What should we call you?">
 
-        <label for="signup-username">Choose a username</label>
-        <input type="text" id="signup-username" maxlength="60" autocomplete="username" placeholder="yourname">
+        <label for="signup-username" data-i18n="welcome.chooseUsername">Choose a username</label>
+        <input type="text" id="signup-username" maxlength="60" autocomplete="username" data-i18n-ph="welcome.usernamePh" placeholder="yourname">
 
-        <label for="signup-password">Choose a password</label>
-        <input type="password" id="signup-password" maxlength="200" autocomplete="new-password" placeholder="At least 6 characters">
+        <label for="signup-password" data-i18n="welcome.choosePassword">Choose a password</label>
+        <input type="password" id="signup-password" maxlength="200" autocomplete="new-password" data-i18n-ph="welcome.passwordPh" placeholder="At least 6 characters">
 
-        <button class="primary-btn" id="btn-signup" type="button">Create account</button>
+        <button class="primary-btn" id="btn-signup" type="button" data-i18n="welcome.createAccount">Create account</button>
       </div>
 
       <p class="fineprint" id="auth-status">&nbsp;</p>
@@ -469,58 +504,58 @@
 
     <div id="view-portal" class="hidden">
       <div class="brandmark"><span class="stub">♥</span><span class="wordmark">Dates</span></div>
-      <div class="eyebrow">✦ Your invitations ✦</div>
-      <h1 id="portal-headline">Welcome back</h1>
-      <p class="sub" id="portal-sub">Here's everyone you've invited.</p>
+      <div class="eyebrow" data-i18n="portal.eyebrow">✦ Your invitations ✦</div>
+      <h1 id="portal-headline" data-i18n="portal.headline">Welcome back</h1>
+      <p class="sub" id="portal-sub" data-i18n="portal.sub">Here's everyone you've invited.</p>
 
       <div id="portal-list"></div>
-      <p class="fineprint hidden" id="portal-empty">You haven't sent an invitation yet.</p>
+      <p class="fineprint hidden" id="portal-empty" data-i18n="portal.empty">You haven't sent an invitation yet.</p>
 
-      <button class="primary-btn" id="btn-portal-new" type="button">+ New invitation</button>
-      <button class="link-btn" id="btn-logout">Log out</button>
+      <button class="primary-btn" id="btn-portal-new" type="button" data-i18n="portal.newInvite">+ New invitation</button>
+      <button class="link-btn" id="btn-logout" data-i18n="portal.logout">Log out</button>
     </div>
 
     <div id="view-setup" class="hidden">
       <div class="brandmark"><span class="stub">♥</span><span class="wordmark">Dates</span></div>
-      <div class="eyebrow">✦ Create an invitation ✦</div>
-      <h1>Set the scene</h1>
-      <p class="sub">Choose the month and place. They'll pick the day that fits.</p>
+      <div class="eyebrow" data-i18n="setup.eyebrow">✦ Create an invitation ✦</div>
+      <h1 data-i18n="setup.headline">Set the scene</h1>
+      <p class="sub" data-i18n="setup.sub">Choose the month and place. They'll pick the day that fits.</p>
 
-      <label for="in-from">Your name</label>
-      <input type="text" id="in-from" maxlength="60" placeholder="Who's asking?">
+      <label for="in-from" data-i18n="setup.yourName">Your name</label>
+      <input type="text" id="in-from" maxlength="60" data-i18n-ph="setup.yourNamePh" placeholder="Who's asking?">
 
-      <label for="in-to">Their name (optional)</label>
-      <input type="text" id="in-to" maxlength="60" placeholder="Who's this for?">
+      <label for="in-to" data-i18n="setup.theirName">Their name (optional)</label>
+      <input type="text" id="in-to" maxlength="60" data-i18n-ph="setup.theirNamePh" placeholder="Who's this for?">
 
-      <label for="in-place">Place</label>
-      <input type="text" id="in-place" maxlength="100" placeholder="Where should this happen?">
+      <label for="in-place" data-i18n="setup.place">Place</label>
+      <input type="text" id="in-place" maxlength="100" data-i18n-ph="setup.placePh" placeholder="Where should this happen?">
 
-      <label for="in-month">Month</label>
+      <label for="in-month" data-i18n="setup.month">Month</label>
       <input type="month" id="in-month">
 
-      <label for="in-plan">What's the plan? (optional)</label>
-      <textarea id="in-plan" maxlength="500" placeholder="A little preview of the date..."></textarea>
+      <label for="in-plan" data-i18n="setup.plan">What's the plan? (optional)</label>
+      <textarea id="in-plan" maxlength="500" data-i18n-ph="setup.planPh" placeholder="A little preview of the date..."></textarea>
 
-      <button class="primary-btn" id="btn-create" type="button">Create invitation</button>
-      <button class="link-btn" id="btn-back-portal">← Back to your invitations</button>
+      <button class="primary-btn" id="btn-create" type="button" data-i18n="setup.create">Create invitation</button>
+      <button class="link-btn" id="btn-back-portal" data-i18n="setup.backToPortal">← Back to your invitations</button>
     </div>
 
     <div id="view-created" class="hidden">
       <div class="brandmark"><span class="stub">♥</span><span class="wordmark">Dates</span></div>
-      <div class="eyebrow">✦ Invitation ready ✦</div>
-      <h1>Send the link</h1>
+      <div class="eyebrow" data-i18n="created.eyebrow">✦ Invitation ready ✦</div>
+      <h1 data-i18n="created.headline">Send the link</h1>
       <p class="sub" id="created-sub"></p>
       <div class="confirm-detail">
-        <div class="confirm-row"><span>From</span><span id="created-from">—</span></div>
-        <div class="confirm-row"><span>To</span><span id="created-to">—</span></div>
-        <div class="confirm-row"><span>Where</span><span id="created-place">—</span></div>
-        <div class="confirm-row"><span>Month</span><span id="created-month">—</span></div>
+        <div class="confirm-row"><span data-i18n="created.from">From</span><span id="created-from">—</span></div>
+        <div class="confirm-row"><span data-i18n="created.to">To</span><span id="created-to">—</span></div>
+        <div class="confirm-row"><span data-i18n="created.where">Where</span><span id="created-place">—</span></div>
+        <div class="confirm-row"><span data-i18n="created.monthLabel">Month</span><span id="created-month">—</span></div>
       </div>
-      <button class="primary-btn" id="btn-copy">Copy invitation link</button>
-      <button class="primary-btn" id="btn-share" type="button" style="margin-top:10px;">Share invitation</button>
-      <button class="link-btn" id="btn-open">Open invitation</button>
-      <button class="link-btn" id="btn-new">Create another invitation</button>
-      <button class="link-btn" id="btn-created-portal">Back to your invitations</button>
+      <button class="primary-btn" id="btn-copy" data-i18n="created.copyLink">Copy invitation link</button>
+      <button class="primary-btn" id="btn-share" type="button" style="margin-top:10px;" data-i18n="created.share">Share invitation</button>
+      <button class="link-btn" id="btn-open" data-i18n="created.open">Open invitation</button>
+      <button class="link-btn" id="btn-new" data-i18n="created.another">Create another invitation</button>
+      <button class="link-btn" id="btn-created-portal" data-i18n="portal.backLink">Back to your invitations</button>
       <p class="fineprint" id="copy-status"></p>
       <textarea id="share-link" readonly aria-label="Invitation link"
         style="margin-top:10px;display:none;min-height:82px;width:100%;"></textarea>
@@ -528,67 +563,67 @@
 
     <div id="view-ask" class="hidden">
       <div class="brandmark"><span class="stub">♥</span><span class="wordmark">Dates</span></div>
-      <div class="eyebrow">✦ You've been invited ✦</div>
+      <div class="eyebrow" data-i18n="ask.eyebrow">✦ You've been invited ✦</div>
       <h1 id="ask-headline">Will you meet me?</h1>
       <p class="sub" id="ask-sub"></p>
 
       <div class="decision-zone" id="decision-zone">
-        <button class="yes-btn" id="btn-yes" type="button">Yes ❤️</button>
-        <button class="no-btn" id="btn-no" type="button">No</button>
+        <button class="yes-btn" id="btn-yes" type="button" data-i18n="ask.yes">Yes ❤️</button>
+        <button class="no-btn" id="btn-no" type="button" data-i18n="ask.no">No</button>
       </div>
       <p class="taunt" id="taunt"></p>
 
       <div class="perforation"></div>
-      <p class="fineprint">A seat has already been saved for you.</p>
+      <p class="fineprint" data-i18n="ask.footnote">A seat has already been saved for you.</p>
     </div>
 
     <div id="view-calendar" class="hidden">
       <div class="brandmark"><span class="stub">♥</span><span class="wordmark">Dates</span></div>
-      <div class="eyebrow">✦ Almost there ✦</div>
-      <h1>Pick your day</h1>
+      <div class="eyebrow" data-i18n="calendar.eyebrow">✦ Almost there ✦</div>
+      <h1 data-i18n="calendar.headline">Pick your day</h1>
       <p class="sub" id="cal-sub"></p>
       <div class="plan-quote hidden" id="plan-quote">
-        <div class="plan-label">The plan</div>
+        <div class="plan-label" data-i18n="calendar.plan">The plan</div>
         <div class="plan-text" id="plan-text"></div>
       </div>
       <div class="calendar">
         <div class="cal-grid" id="cal-dow-row"></div>
         <div class="cal-grid" id="cal-grid"></div>
       </div>
-      <button class="link-btn" id="btn-back-ask">Back</button>
+      <button class="link-btn" id="btn-back-ask" data-i18n="calendar.back">Back</button>
     </div>
 
     <div id="view-confirm" class="hidden">
       <div class="brandmark"><span class="stub">♥</span><span class="wordmark">Dates</span></div>
       <div class="confirm-icon">🎟️</div>
-      <h1>It's a date</h1>
-      <p class="sub" id="confirm-sub">Consider it locked in.</p>
+      <h1 data-i18n="confirm.headline">It's a date</h1>
+      <p class="sub" id="confirm-sub" data-i18n="confirm.sub">Consider it locked in.</p>
       <div class="confirm-detail">
-        <div class="confirm-row"><span>With</span><span id="conf-with">—</span></div>
-        <div class="confirm-row"><span>Where</span><span id="conf-where">—</span></div>
-        <div class="confirm-row"><span>When</span><span id="conf-when">—</span></div>
+        <div class="confirm-row"><span data-i18n="confirm.with">With</span><span id="conf-with">—</span></div>
+        <div class="confirm-row"><span data-i18n="created.where">Where</span><span id="conf-where">—</span></div>
+        <div class="confirm-row"><span data-i18n="confirm.when">When</span><span id="conf-when">—</span></div>
       </div>
       <div class="plan-quote hidden" id="plan-quote-confirm">
-        <div class="plan-label">The plan</div>
+        <div class="plan-label" data-i18n="calendar.plan">The plan</div>
         <div class="plan-text" id="plan-text-confirm"></div>
       </div>
-      <p class="fineprint">This confirmation is stored in this browser. The invitation link remains shareable.</p>
-      <button class="link-btn" id="btn-change-date">Choose another date</button>
+      <p class="fineprint" data-i18n="confirm.footnote">This confirmation is stored in this browser. The invitation link remains shareable.</p>
+      <button class="link-btn" id="btn-change-date" data-i18n="confirm.changeDate">Choose another date</button>
     </div>
 
     <div id="view-declined" class="hidden">
       <div class="brandmark"><span class="stub">♥</span><span class="wordmark">Dates</span></div>
-      <div class="eyebrow">✦ Maybe next time ✦</div>
-      <h1>No hard feelings.</h1>
+      <div class="eyebrow" data-i18n="declined.eyebrow">✦ Maybe next time ✦</div>
+      <h1 data-i18n="declined.headline">No hard feelings.</h1>
       <p class="sub" id="declined-sub"></p>
-      <button class="primary-btn" id="btn-reconsider">Actually... maybe yes</button>
+      <button class="primary-btn" id="btn-reconsider" data-i18n="declined.reconsider">Actually... maybe yes</button>
     </div>
 
     <div id="view-error" class="hidden">
       <div class="brandmark"><span class="stub">♥</span><span class="wordmark">Dates</span></div>
-      <div class="eyebrow">✦ Oops ✦</div>
-      <h1>That invitation isn't valid.</h1>
-      <p class="sub">The link may be incomplete or corrupted. Ask the sender to create a fresh invitation.</p>
+      <div class="eyebrow" data-i18n="error.eyebrow">✦ Oops ✦</div>
+      <h1 data-i18n="error.headline">That invitation isn't valid.</h1>
+      <p class="sub" data-i18n="error.sub">The link may be incomplete or corrupted. Ask the sender to create a fresh invitation.</p>
     </div>
 
   </div>
@@ -605,6 +640,299 @@
   // instead of visiting your server's address directly.
   const API_BASE = "";
   const $ = id => document.getElementById(id);
+
+  // ---- Translations ----
+  // Every piece of static text lives here, keyed by a dotted name like
+  // "welcome.headline". Static HTML text uses data-i18n="key" (and
+  // data-i18n-ph="key" for input placeholders) so applyTranslations()
+  // can fill it in automatically. Dynamic text built in JS calls
+  // t("key", { name: "Sam" }) — {{name}} inside the string gets replaced.
+  const translations = {
+    en: {
+      "welcome.eyebrow": "✦ Welcome ✦",
+      "welcome.headline": "Sign in to send invitations",
+      "welcome.sub": "Your account keeps track of everyone you've invited, and whether they've said when.",
+      "welcome.tabLogin": "Log in",
+      "welcome.tabSignup": "Sign up",
+      "welcome.username": "Username",
+      "welcome.usernamePh": "yourname",
+      "welcome.password": "Password",
+      "welcome.yourName": "Your name",
+      "welcome.yourNamePh": "What should we call you?",
+      "welcome.chooseUsername": "Choose a username",
+      "welcome.choosePassword": "Choose a password",
+      "welcome.passwordPh": "At least 6 characters",
+      "welcome.createAccount": "Create account",
+      "welcome.enterCredentials": "Enter your username and password.",
+      "welcome.chooseCredentials": "Choose a username and password.",
+      "welcome.loggingIn": "Logging in...",
+      "welcome.creatingAccount": "Creating account...",
+      "welcome.sessionExpired": "Your session expired — please log in again.",
+
+      "portal.eyebrow": "✦ Your invitations ✦",
+      "portal.headline": "Welcome back",
+      "portal.headlineNamed": "Welcome back, {{name}}",
+      "portal.sub": "Here's everyone you've invited.",
+      "portal.empty": "You haven't sent an invitation yet.",
+      "portal.newInvite": "+ New invitation",
+      "portal.logout": "Log out",
+      "portal.backLink": "Back to your invitations",
+      "portal.pending": "Awaiting reply",
+      "portal.confirmed": "Confirmed — {{date}}",
+      "portal.someone": "Someone lovely",
+
+      "setup.eyebrow": "✦ Create an invitation ✦",
+      "setup.headline": "Set the scene",
+      "setup.sub": "Choose the month and place. They'll pick the day that fits.",
+      "setup.yourName": "Your name",
+      "setup.yourNamePh": "Who's asking?",
+      "setup.theirName": "Their name (optional)",
+      "setup.theirNamePh": "Who's this for?",
+      "setup.place": "Place",
+      "setup.placePh": "Where should this happen?",
+      "setup.month": "Month",
+      "setup.plan": "What's the plan? (optional)",
+      "setup.planPh": "A little preview of the date...",
+      "setup.create": "Create invitation",
+      "setup.backToPortal": "← Back to your invitations",
+      "setup.creating": "Creating...",
+      "setup.fillRequired": "Please enter your name, place, and month.",
+
+      "created.eyebrow": "✦ Invitation ready ✦",
+      "created.headline": "Send the link",
+      "created.from": "From",
+      "created.to": "To",
+      "created.where": "Where",
+      "created.monthLabel": "Month",
+      "created.copyLink": "Copy invitation link",
+      "created.share": "Share invitation",
+      "created.open": "Open invitation",
+      "created.another": "Create another invitation",
+      "created.anyoneNote": "Anyone you send it to",
+      "created.subNamed": "Your invitation for {{name}} is ready.",
+      "created.subUnnamed": "Your invitation is ready to share.",
+      "created.copied": "Copied! Send it to your person. ❤️",
+      "created.copyManually": "The link is shown below — copy it manually.",
+      "created.shared": "Invitation shared.",
+      "created.shareText": "You've got an invitation. ❤️",
+      "created.couldNotCreate": "Couldn't reach the server to create the invitation. Check the connection and try again.\n\n({{error}})",
+      "created.copyInstructions": "Copy the link below and send it. This page will update on its own the moment they pick a day.",
+
+      "ask.eyebrow": "✦ You've been invited ✦",
+      "ask.yes": "Yes ❤️",
+      "ask.no": "No",
+      "ask.footnote": "A seat has already been saved for you.",
+      "ask.headlineNamed": "{{name}}, will you meet me?",
+      "ask.headlineGeneric": "Will you meet me?",
+      "ask.subLine": "{{from}} is inviting you to {{place}}, sometime in {{month}}.",
+
+      "calendar.eyebrow": "✦ Almost there ✦",
+      "calendar.headline": "Pick your day",
+      "calendar.plan": "The plan",
+      "calendar.back": "Back",
+      "calendar.subLine": "Somewhere in {{month}} — tap the day that works.",
+      "calendar.saving": "Saving...",
+      "calendar.confirmDay": "Confirm {{date}}",
+      "calendar.couldNotSave": "Couldn't save your answer — check the connection and try again.\n\n({{error}})",
+
+      "confirm.headline": "It's a date",
+      "confirm.with": "With",
+      "confirm.when": "When",
+      "confirm.sub": "Consider it locked in.",
+      "confirm.subNamed": "{{name}} will be counting the days.",
+      "confirm.footnote": "This confirmation is stored in this browser. The invitation link remains shareable.",
+      "confirm.changeDate": "Choose another date",
+
+      "declined.eyebrow": "✦ Maybe next time ✦",
+      "declined.headline": "No hard feelings.",
+      "declined.reconsider": "Actually... maybe yes",
+      "declined.sub": "{{name}} will survive. Probably. If you change your mind, the invitation is still here.",
+      "declined.taunts": [
+        "Okay, I respect the honesty.",
+        "That was a very decisive no.",
+        "Fair enough. 😭",
+        "No pressure. Literally.",
+        "Maybe another day?"
+      ],
+
+      "error.eyebrow": "✦ Oops ✦",
+      "error.headline": "That invitation isn't valid.",
+      "error.sub": "The link may be incomplete or corrupted. Ask the sender to create a fresh invitation."
+    },
+    fr: {
+      "welcome.eyebrow": "✦ Bienvenue ✦",
+      "welcome.headline": "Connectez-vous pour envoyer des invitations",
+      "welcome.sub": "Votre compte garde une trace de toutes les personnes que vous avez invitées, et de leurs réponses.",
+      "welcome.tabLogin": "Connexion",
+      "welcome.tabSignup": "Inscription",
+      "welcome.username": "Nom d'utilisateur",
+      "welcome.usernamePh": "votrenom",
+      "welcome.password": "Mot de passe",
+      "welcome.yourName": "Votre nom",
+      "welcome.yourNamePh": "Comment doit-on vous appeler ?",
+      "welcome.chooseUsername": "Choisissez un nom d'utilisateur",
+      "welcome.choosePassword": "Choisissez un mot de passe",
+      "welcome.passwordPh": "Au moins 6 caractères",
+      "welcome.createAccount": "Créer un compte",
+      "welcome.enterCredentials": "Entrez votre nom d'utilisateur et votre mot de passe.",
+      "welcome.chooseCredentials": "Choisissez un nom d'utilisateur et un mot de passe.",
+      "welcome.loggingIn": "Connexion en cours...",
+      "welcome.creatingAccount": "Création du compte...",
+      "welcome.sessionExpired": "Votre session a expiré — veuillez vous reconnecter.",
+
+      "portal.eyebrow": "✦ Vos invitations ✦",
+      "portal.headline": "Bon retour",
+      "portal.headlineNamed": "Bon retour, {{name}}",
+      "portal.sub": "Voici toutes les personnes que vous avez invitées.",
+      "portal.empty": "Vous n'avez encore envoyé aucune invitation.",
+      "portal.newInvite": "+ Nouvelle invitation",
+      "portal.logout": "Se déconnecter",
+      "portal.backLink": "Retour à vos invitations",
+      "portal.pending": "En attente de réponse",
+      "portal.confirmed": "Confirmé — {{date}}",
+      "portal.someone": "Quelqu'un de charmant",
+
+      "setup.eyebrow": "✦ Créer une invitation ✦",
+      "setup.headline": "Plantons le décor",
+      "setup.sub": "Choisissez le mois et le lieu. L'autre personne choisira le jour qui lui convient.",
+      "setup.yourName": "Votre nom",
+      "setup.yourNamePh": "Qui invite ?",
+      "setup.theirName": "Son nom (facultatif)",
+      "setup.theirNamePh": "Pour qui est-ce ?",
+      "setup.place": "Lieu",
+      "setup.placePh": "Où cela doit-il se passer ?",
+      "setup.month": "Mois",
+      "setup.plan": "Quel est le programme ? (facultatif)",
+      "setup.planPh": "Un petit aperçu du rendez-vous...",
+      "setup.create": "Créer l'invitation",
+      "setup.backToPortal": "← Retour à vos invitations",
+      "setup.creating": "Création en cours...",
+      "setup.fillRequired": "Merci d'indiquer votre nom, le lieu et le mois.",
+
+      "created.eyebrow": "✦ Invitation prête ✦",
+      "created.headline": "Envoyez le lien",
+      "created.from": "De",
+      "created.to": "À",
+      "created.where": "Où",
+      "created.monthLabel": "Mois",
+      "created.copyLink": "Copier le lien de l'invitation",
+      "created.share": "Partager l'invitation",
+      "created.open": "Ouvrir l'invitation",
+      "created.another": "Créer une autre invitation",
+      "created.anyoneNote": "Toute personne à qui vous l'envoyez",
+      "created.subNamed": "Votre invitation pour {{name}} est prête.",
+      "created.subUnnamed": "Votre invitation est prête à être partagée.",
+      "created.copied": "Copié ! Envoyez-le à la personne concernée. ❤️",
+      "created.copyManually": "Le lien est affiché ci-dessous — copiez-le manuellement.",
+      "created.shared": "Invitation partagée.",
+      "created.shareText": "Vous avez reçu une invitation. ❤️",
+      "created.couldNotCreate": "Impossible de joindre le serveur pour créer l'invitation. Vérifiez la connexion et réessayez.\n\n({{error}})",
+      "created.copyInstructions": "Copiez le lien ci-dessous et envoyez-le. Cette page se mettra à jour automatiquement dès que la date sera choisie.",
+
+      "ask.eyebrow": "✦ Vous avez été invité(e) ✦",
+      "ask.yes": "Oui ❤️",
+      "ask.no": "Non",
+      "ask.footnote": "Une place vous a déjà été réservée.",
+      "ask.headlineNamed": "{{name}}, veux-tu me retrouver ?",
+      "ask.headlineGeneric": "Veux-tu me retrouver ?",
+      "ask.subLine": "{{from}} t'invite à {{place}}, quelque part en {{month}}.",
+
+      "calendar.eyebrow": "✦ Presque là ✦",
+      "calendar.headline": "Choisis ton jour",
+      "calendar.plan": "Le programme",
+      "calendar.back": "Retour",
+      "calendar.subLine": "Quelque part en {{month}} — touche le jour qui te convient.",
+      "calendar.saving": "Enregistrement...",
+      "calendar.confirmDay": "Confirmer le {{date}}",
+      "calendar.couldNotSave": "Impossible d'enregistrer ta réponse — vérifie la connexion et réessaie.\n\n({{error}})",
+
+      "confirm.headline": "C'est un rendez-vous",
+      "confirm.with": "Avec",
+      "confirm.when": "Quand",
+      "confirm.sub": "C'est dans la poche.",
+      "confirm.subNamed": "{{name}} va compter les jours.",
+      "confirm.footnote": "Cette confirmation est enregistrée dans ce navigateur. Le lien de l'invitation reste partageable.",
+      "confirm.changeDate": "Choisir une autre date",
+
+      "declined.eyebrow": "✦ Une prochaine fois peut-être ✦",
+      "declined.headline": "Pas de rancune.",
+      "declined.reconsider": "En fait... peut-être oui",
+      "declined.sub": "{{name}} survivra. Probablement. Si tu changes d'avis, l'invitation est toujours là.",
+      "declined.taunts": [
+        "D'accord, je respecte l'honnêteté.",
+        "Voilà un non très décidé.",
+        "Tant pis. 😭",
+        "Aucune pression. Vraiment.",
+        "Une autre fois peut-être ?"
+      ],
+
+      "error.eyebrow": "✦ Oups ✦",
+      "error.headline": "Cette invitation n'est pas valide.",
+      "error.sub": "Le lien est peut-être incomplet ou corrompu. Demandez à l'expéditeur de créer une nouvelle invitation."
+    }
+  };
+
+  const LANG_KEY = "dates_lang";
+  let currentLang = "en";
+  let currentView = "welcome";
+
+  function detectInitialLang() {
+    try {
+      const saved = localStorage.getItem(LANG_KEY);
+      if (saved && translations[saved]) return saved;
+    } catch (e) { /* localStorage unavailable — fall through */ }
+    return (navigator.language || "en").toLowerCase().startsWith("fr") ? "fr" : "en";
+  }
+
+  // Look up a translation key and substitute any {{placeholders}}.
+  function t(key, vars) {
+    const table = translations[currentLang] || translations.en;
+    let str = table[key];
+    if (str === undefined) str = translations.en[key] || key; // fall back to English, then the key itself
+    if (vars) {
+      Object.keys(vars).forEach(k => {
+        str = str.replace(new RegExp("{{" + k + "}}", "g"), vars[k]);
+      });
+    }
+    return str;
+  }
+
+  function applyTranslations() {
+    document.documentElement.lang = currentLang;
+    document.querySelectorAll("[data-i18n]").forEach(el => {
+      el.textContent = t(el.getAttribute("data-i18n"));
+    });
+    document.querySelectorAll("[data-i18n-ph]").forEach(el => {
+      el.setAttribute("placeholder", t(el.getAttribute("data-i18n-ph")));
+    });
+    $("lang-en").classList.toggle("active", currentLang === "en");
+    $("lang-fr").classList.toggle("active", currentLang === "fr");
+  }
+
+  // Switching language re-applies static text, then re-renders whatever
+  // dynamic content is on screen right now (so dates, names, and messages
+  // built in JS update too, not just the static labels).
+  function setLanguage(lang) {
+    if (!translations[lang]) return;
+    currentLang = lang;
+    try { localStorage.setItem(LANG_KEY, lang); } catch (e) { /* fine — just won't persist */ }
+    applyTranslations();
+    rerenderCurrentView();
+  }
+
+  function rerenderCurrentView() {
+    if (currentView === "portal") { renderPortal(); return; }
+    if (currentView === "ask" && invite) { renderAsk(invite); return; }
+    if (currentView === "calendar" && invite) { renderCalendar(invite); return; }
+    if (currentView === "confirm" && invite && invite.response) { renderConfirm(invite.response); return; }
+    if (currentView === "declined" && invite) {
+      $("declined-sub").textContent = t("declined.sub", { name: invite.from });
+    }
+  }
+
+  $("lang-en").addEventListener("click", () => setLanguage("en"));
+  $("lang-fr").addEventListener("click", () => setLanguage("fr"));
+
 
   const views = ["welcome","portal","setup","created","ask","calendar","confirm","declined","error"]
     .reduce((o, key) => (o[key] = $("view-" + key), o), {});
@@ -738,11 +1066,11 @@
     const username = clean($("login-username").value, 60);
     const password = $("login-password").value;
     if (!username || !password) {
-      $("auth-status").textContent = "Enter your username and password.";
+      $("auth-status").textContent = t("welcome.enterCredentials");
       return;
     }
     $("btn-login").disabled = true;
-    $("btn-login").textContent = "Logging in...";
+    $("btn-login").textContent = t("welcome.loggingIn");
     try {
       const data = await apiLogin(username, password);
       setAuth(data);
@@ -751,7 +1079,7 @@
       $("auth-status").textContent = e.message;
     } finally {
       $("btn-login").disabled = false;
-      $("btn-login").textContent = "Log in";
+      $("btn-login").textContent = t("welcome.tabLogin");
     }
   });
 
@@ -760,11 +1088,11 @@
     const username = clean($("signup-username").value, 60);
     const password = $("signup-password").value;
     if (!username || !password) {
-      $("auth-status").textContent = "Choose a username and password.";
+      $("auth-status").textContent = t("welcome.chooseCredentials");
       return;
     }
     $("btn-signup").disabled = true;
-    $("btn-signup").textContent = "Creating account...";
+    $("btn-signup").textContent = t("welcome.creatingAccount");
     try {
       const data = await apiSignup(displayName, username, password);
       setAuth(data);
@@ -773,7 +1101,7 @@
       $("auth-status").textContent = e.message;
     } finally {
       $("btn-signup").disabled = false;
-      $("btn-signup").textContent = "Create account";
+      $("btn-signup").textContent = t("welcome.createAccount");
     }
   });
 
@@ -794,14 +1122,15 @@
   $("btn-created-portal").addEventListener("click", () => { stopPolling(); renderPortal(); });
 
   function statusLabel(inv) {
-    if (!inv.response) return { text: "Awaiting reply", cls: "pending" };
-    const d = inv.response;
-    return { text: "Confirmed — " + dateLabel(d), cls: "confirmed" };
+    if (!inv.response) return { text: t("portal.pending"), cls: "pending" };
+    return { text: t("portal.confirmed", { date: dateLabel(inv.response) }), cls: "confirmed" };
   }
 
   async function renderPortal() {
     const auth = getAuth();
-    $("portal-headline").textContent = auth && auth.displayName ? `Welcome back, ${auth.displayName}` : "Welcome back";
+    $("portal-headline").textContent = auth && auth.displayName
+      ? t("portal.headlineNamed", { name: auth.displayName })
+      : t("portal.headline");
     show("portal");
 
     const list = $("portal-list");
@@ -820,7 +1149,7 @@
         const status = statusLabel(inv);
         card.innerHTML =
           `<div class="invite-card-top">
-            <span class="invite-card-to">${escapeHtml(inv.to || "Someone lovely")}</span>
+            <span class="invite-card-to">${escapeHtml(inv.to || t("portal.someone"))}</span>
             <span class="invite-card-month">${escapeHtml(monthLabel(inv.month))}</span>
           </div>
           <div class="invite-card-place">${escapeHtml(inv.place)}</div>
@@ -831,7 +1160,7 @@
       // token likely expired — send them back to log in
       clearAuth();
       show("welcome");
-      $("auth-status").textContent = "Your session expired — please log in again.";
+      $("auth-status").textContent = t("welcome.sessionExpired");
     }
   }
 
@@ -846,6 +1175,7 @@
   }
 
   function show(name) {
+    currentView = name;
     Object.values(views).forEach(v => v.classList.add("hidden"));
     views[name].classList.remove("hidden");
   }
@@ -860,14 +1190,14 @@
 
   function monthLabel(value) {
     const [year, month] = value.split("-").map(Number);
-    return new Intl.DateTimeFormat(undefined, {
+    return new Intl.DateTimeFormat(currentLang === "fr" ? "fr-FR" : "en-US", {
       month: "long",
       year: "numeric"
     }).format(new Date(year, month - 1, 1));
   }
 
   function dateLabel(date) {
-    return new Intl.DateTimeFormat(undefined, {
+    return new Intl.DateTimeFormat(currentLang === "fr" ? "fr-FR" : "en-US", {
       weekday: "long",
       month: "long",
       day: "numeric",
@@ -896,12 +1226,12 @@
       const plan = clean(fields.plan.value, 500);
 
       if (!from || !place || !validMonth(month)) {
-        alert("Please enter your name, place, and month.");
+        alert(t("setup.fillRequired"));
         return;
       }
 
       btn.disabled = true;
-      btn.textContent = "Creating...";
+      btn.textContent = t("setup.creating");
 
       const { id } = await apiCreateInvite({ from, to, place, month, plan });
       currentId = id;
@@ -910,12 +1240,12 @@
       const url = location.href.split("?")[0] + "?id=" + id;
 
       $("created-from").textContent = from;
-      $("created-to").textContent = to || "Anyone you send it to";
+      $("created-to").textContent = to || t("created.anyoneNote");
       $("created-place").textContent = place;
       $("created-month").textContent = monthLabel(month);
-      $("created-sub").textContent =
-        to ? "Your invitation for " + to + " is ready."
-           : "Your invitation is ready to share.";
+      $("created-sub").textContent = to
+        ? t("created.subNamed", { name: to })
+        : t("created.subUnnamed");
 
       $("btn-copy").dataset.url = url;
 
@@ -927,8 +1257,7 @@
 
       const status = $("copy-status");
       if (status) {
-        status.textContent =
-          "Copy the link below and send it. This page will update on its own the moment they pick a day.";
+        status.textContent = t("created.copyInstructions");
       }
 
       show("created");
@@ -938,13 +1267,13 @@
       if (error.message === "Please log in again") {
         clearAuth();
         show("welcome");
-        $("auth-status").textContent = "Your session expired — please log in again.";
+        $("auth-status").textContent = t("welcome.sessionExpired");
       } else {
-        alert("Couldn't reach the server to create the invitation. Check the connection and try again.\n\n(" + error.message + ")");
+        alert(t("created.couldNotCreate", { error: error.message }));
       }
     } finally {
       btn.disabled = false;
-      btn.textContent = "Create invitation";
+      btn.textContent = t("setup.create");
     }
   });
 
@@ -961,12 +1290,12 @@
 
     if (navigator.clipboard && window.isSecureContext) {
       navigator.clipboard.writeText(url).then(function () {
-        $("copy-status").textContent = "Copied! Send it to your person. ❤️";
+        $("copy-status").textContent = t("created.copied");
       }).catch(function () {
-        $("copy-status").textContent = "The link is shown below — copy it manually.";
+        $("copy-status").textContent = t("created.copyManually");
       });
     } else {
-      $("copy-status").textContent = "The link is shown below — copy it manually.";
+      $("copy-status").textContent = t("created.copyManually");
     }
   });
 
@@ -976,10 +1305,10 @@
       try {
         await navigator.share({
           title: "Dates",
-          text: "You've got an invitation. ❤️",
+          text: t("created.shareText"),
           url: url
         });
-        $("copy-status").textContent = "Invitation shared.";
+        $("copy-status").textContent = t("created.shared");
       } catch (e) {
         if (e.name !== "AbortError") $("copy-status").textContent = url;
       }
@@ -1003,20 +1332,16 @@
     show("setup");
   });
 
-  const taunts = [
-    "Okay, I respect the honesty.",
-    "That was a very decisive no.",
-    "Fair enough. 😭",
-    "No pressure. Literally.",
-    "Maybe another day?"
-  ];
-
   function renderAsk(data) {
-    $("ask-headline").textContent =
-      data.to ? `${data.to}, will you meet me?` : "Will you meet me?";
+    $("ask-headline").textContent = data.to
+      ? t("ask.headlineNamed", { name: data.to })
+      : t("ask.headlineGeneric");
 
-    $("ask-sub").textContent =
-      `${data.from} is inviting you to ${data.place}, sometime in ${monthLabel(data.month)}.`;
+    $("ask-sub").textContent = t("ask.subLine", {
+      from: data.from,
+      place: data.place,
+      month: monthLabel(data.month)
+    });
 
     $("taunt").textContent = "";
     $("btn-no").style.left = "68%";
@@ -1027,12 +1352,11 @@
   }
 
   $("btn-no").addEventListener("click", () => {
-    $("taunt").textContent =
-      taunts[Math.floor(Math.random() * taunts.length)];
+    const taunts = t("declined.taunts");
+    $("taunt").textContent = taunts[Math.floor(Math.random() * taunts.length)];
 
     setTimeout(() => {
-      $("declined-sub").textContent =
-        `${invite.from} will survive. Probably. If you change your mind, the invitation is still here.`;
+      $("declined-sub").textContent = t("declined.sub", { name: invite.from });
       show("declined");
     }, 350);
   });
@@ -1042,8 +1366,7 @@
   function renderCalendar(data) {
     const [year, month] = data.month.split("-").map(Number);
 
-    $("cal-sub").textContent =
-      `Somewhere in ${monthLabel(data.month)} — tap the day that works.`;
+    $("cal-sub").textContent = t("calendar.subLine", { month: monthLabel(data.month) });
 
     if (data.plan) {
       $("plan-text").textContent = data.plan;
@@ -1052,7 +1375,10 @@
       $("plan-quote").classList.add("hidden");
     }
 
-    const dows = ["S","M","T","W","T","F","S"];
+    // Locale-aware single-letter weekday headers (S M T W T F S in English,
+    // D L M M J V S in French).
+    const dowFormatter = new Intl.DateTimeFormat(currentLang === "fr" ? "fr-FR" : "en-US", { weekday: "narrow" });
+    const dows = [3, 4, 5, 6, 7, 8, 9].map(d => dowFormatter.format(new Date(2023, 0, d))); // a known Sun-Sat week
     $("cal-dow-row").innerHTML = "";
 
     dows.forEach(day => {
@@ -1095,14 +1421,13 @@
         confirmButton.id = "date-confirm";
         confirmButton.type = "button";
         confirmButton.className = "primary-btn";
-        confirmButton.textContent =
-          `Confirm ${dateLabel(selectedDate)}`;
+        confirmButton.textContent = t("calendar.confirmDay", { date: dateLabel(selectedDate) });
 
         confirmButton.addEventListener("click", async () => {
           if (!selectedDate) return;
 
           confirmButton.disabled = true;
-          confirmButton.textContent = "Saving...";
+          confirmButton.textContent = t("calendar.saving");
 
           try {
             const updated = await apiSubmitResponse(currentId, selectedDate);
@@ -1110,9 +1435,9 @@
             renderConfirm(updated.response);
           } catch (error) {
             console.error("SUBMIT RESPONSE ERROR:", error);
-            alert("Couldn't save your answer — check the connection and try again.\n\n(" + error.message + ")");
+            alert(t("calendar.couldNotSave", { error: error.message }));
             confirmButton.disabled = false;
-            confirmButton.textContent = `Confirm ${dateLabel(selectedDate)}`;
+            confirmButton.textContent = t("calendar.confirmDay", { date: dateLabel(selectedDate) });
           }
         });
 
@@ -1131,8 +1456,7 @@
     $("conf-where").textContent = invite.place;
     $("conf-when").textContent = dateLabel(date);
 
-    $("confirm-sub").textContent =
-      `${invite.from} will be counting the days.`;
+    $("confirm-sub").textContent = t("confirm.subNamed", { name: invite.from });
 
     if (invite.plan) {
       $("plan-text-confirm").textContent = invite.plan;
@@ -1185,6 +1509,9 @@
   }
 
   function init() {
+    currentLang = detectInitialLang();
+    applyTranslations();
+
     validateSetup();
 
     if (loadInvitationFromUrl()) return; // recipient link — no login needed
