@@ -1,14 +1,18 @@
 // Dates — backend
-// Zero dependencies: just Node's built-in modules, so `npm install` has
-// nothing to fetch and nothing to break. Deploy with: node server.js
+// Almost zero dependencies — the one exception is 'web-push', needed to
+// send real push notifications. Deploy with: node server.js
+// IMPORTANT: because of that one dependency, Render's Build Command must
+// now be `npm install` (not blank like before) — see server/README.md.
 
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
+const webpush = require('web-push');
 
 const DB_FILE = path.join(__dirname, 'invites.json');
 const USERS_FILE = path.join(__dirname, 'users.json');
+const VAPID_FILE = path.join(__dirname, 'vapid.json');
 const PORT = process.env.PORT || 3000;
 
 // Sessions live in memory only — they reset if the server restarts.
@@ -26,6 +30,20 @@ const loadInvites = () => loadJSON(DB_FILE);
 const saveInvites = db => saveJSON(DB_FILE, db);
 const loadUsers = () => loadJSON(USERS_FILE);
 const saveUsers = db => saveJSON(USERS_FILE, db);
+
+// ---- Push notifications: VAPID keys identify OUR server to the push
+// ---- services (Apple/Google/Mozilla). Generated once, then reused
+// ---- forever — regenerating them would silently break every existing
+// ---- subscription, so we persist them to a file. ----
+function loadOrCreateVapidKeys() {
+  const existing = loadJSON(VAPID_FILE);
+  if (existing.publicKey && existing.privateKey) return existing;
+  const keys = webpush.generateVAPIDKeys();
+  saveJSON(VAPID_FILE, keys);
+  return keys;
+}
+const vapidKeys = loadOrCreateVapidKeys();
+webpush.setVapidDetails('mailto:dates-app@example.com', vapidKeys.publicKey, vapidKeys.privateKey);
 
 function send(res, status, body) {
   const payload = JSON.stringify(body);
@@ -89,7 +107,109 @@ function normalizeUsername(name) {
   return String(name || '').trim().toLowerCase();
 }
 
+// Allowed reminder lead times, in hours. 0 means "no reminder".
+const ALLOWED_REMINDER_HOURS = [0, 1, 3, 24, 48, 168];
+
+// We only collect a day/month/year for the date, not a time of day, so
+// reminders are computed against a fixed reference point: noon UTC on the
+// chosen day. This is a simplification — good enough for "the morning of"
+// or "a few days before" style reminders, not minute-precise scheduling.
+function computeReminderAt(response, reminderHours) {
+  if (!reminderHours) return null;
+  const eventMoment = Date.UTC(response.year, response.month - 1, response.day, 12, 0, 0);
+  const reminderAt = eventMoment - reminderHours * 3600 * 1000;
+  return reminderAt > Date.now() ? reminderAt : null; // don't schedule reminders in the past
+}
+
+// ---- Background scheduler: checks once a minute for reminders that are
+// ---- due, and sends a real push notification for each one. ----
+function checkAndSendReminders() {
+  const db = loadInvites();
+  let changed = false;
+
+  Object.entries(db).forEach(([id, inv]) => {
+    if (!inv.reminderAt || inv.reminderSent || !inv.pushSubscription) return;
+    if (inv.reminderAt > Date.now()) return;
+
+    const payload = JSON.stringify({
+      title: 'Dates',
+      body: `Reminder: your date with ${inv.from} at ${inv.place} is coming up.`,
+      url: '/?id=' + id,
+    });
+
+    webpush.sendNotification(inv.pushSubscription, payload)
+      .then(() => {
+        const fresh = loadInvites();
+        if (fresh[id]) {
+          fresh[id].reminderSent = true;
+          saveInvites(fresh);
+        }
+      })
+      .catch(err => {
+        console.error('Push failed for invite', id, err.message);
+        // 404/410 means the subscription is gone for good (uninstalled,
+        // permissions revoked) — stop trying so we don't retry forever.
+        const fresh = loadInvites();
+        if (fresh[id] && (err.statusCode === 404 || err.statusCode === 410)) {
+          fresh[id].reminderSent = true;
+          fresh[id].pushSubscription = null;
+          saveInvites(fresh);
+        }
+      });
+  });
+}
+setInterval(checkAndSendReminders, 60 * 1000);
+
+// ---- Static app files served directly, so people visit a real address
+// ---- instead of dealing with local files. dates.html is the app itself;
+// ---- manifest.json + sw.js are what make "Add to Home Screen" and push
+// ---- notifications possible, generated here so no extra repo files are
+// ---- needed. ----
 const HTML_FILE = path.join(__dirname, 'dates.html');
+
+const MANIFEST_JSON = JSON.stringify({
+  name: 'Dates',
+  short_name: 'Dates',
+  start_url: '/',
+  display: 'standalone',
+  background_color: '#150F2A',
+  theme_color: '#241645',
+  icons: [
+    { src: '/icon.svg', sizes: 'any', type: 'image/svg+xml', purpose: 'any maskable' }
+  ]
+});
+
+const ICON_SVG = `<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='#241645'/><path d='M20 35 h60 v30 a8 8 0 0 0 0 16 v9 h-60 v-9 a8 8 0 0 0 0-16 z' fill='none' stroke='#E8B84B' stroke-width='4'/><text x='50' y='56' font-family='Georgia,serif' font-style='italic' font-size='22' fill='#FF4D8D' text-anchor='middle'>♥</text></svg>`;
+
+// The service worker: listens for a push event, shows the notification,
+// and focuses/opens the app if the person taps it.
+const SERVICE_WORKER_JS = `
+self.addEventListener('push', function (event) {
+  let data = { title: 'Dates', body: 'You have a reminder.', url: '/' };
+  try { data = event.data.json(); } catch (e) {}
+  event.waitUntil(
+    self.registration.showNotification(data.title || 'Dates', {
+      body: data.body || '',
+      icon: '/icon.svg',
+      badge: '/icon.svg',
+      data: { url: data.url || '/' }
+    })
+  );
+});
+
+self.addEventListener('notificationclick', function (event) {
+  event.notification.close();
+  const url = (event.notification.data && event.notification.data.url) || '/';
+  event.waitUntil(
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then(function (windowClients) {
+      for (const client of windowClients) {
+        if ('focus' in client) return client.focus();
+      }
+      if (clients.openWindow) return clients.openWindow(url);
+    })
+  );
+});
+`;
 
 const server = http.createServer(async (req, res) => {
   if (req.method === 'OPTIONS') {
@@ -104,9 +224,6 @@ const server = http.createServer(async (req, res) => {
   const url = new URL(req.url, `http://${req.headers.host}`);
   const parts = url.pathname.split('/').filter(Boolean);
 
-  // ---- Serve the app itself: visiting the server's URL directly (or
-  // ---- /dates.html) returns the actual page, so people open a real
-  // ---- https:// address instead of wrestling with a local file. ----
   if (req.method === 'GET' && (parts.length === 0 || (parts.length === 1 && parts[0] === 'dates.html'))) {
     try {
       const html = fs.readFileSync(HTML_FILE, 'utf8');
@@ -118,7 +235,29 @@ const server = http.createServer(async (req, res) => {
     }
   }
 
+  if (req.method === 'GET' && parts.length === 1 && parts[0] === 'manifest.json') {
+    res.writeHead(200, { 'Content-Type': 'application/manifest+json' });
+    return res.end(MANIFEST_JSON);
+  }
+
+  if (req.method === 'GET' && parts.length === 1 && parts[0] === 'icon.svg') {
+    res.writeHead(200, { 'Content-Type': 'image/svg+xml' });
+    return res.end(ICON_SVG);
+  }
+
+  // Service workers must be served from the root scope with no caching
+  // surprises, or the browser won't let them control the page.
+  if (req.method === 'GET' && parts.length === 1 && parts[0] === 'sw.js') {
+    res.writeHead(200, { 'Content-Type': 'application/javascript', 'Service-Worker-Allowed': '/' });
+    return res.end(SERVICE_WORKER_JS);
+  }
+
   try {
+    // ---- GET /api/vapid-public-key (public — needed before subscribing) ----
+    if (req.method === 'GET' && parts.length === 2 && parts[0] === 'api' && parts[1] === 'vapid-public-key') {
+      return send(res, 200, { publicKey: vapidKeys.publicKey });
+    }
+
     // ---- POST /api/signup ----
     if (req.method === 'POST' && parts.length === 2 && parts[0] === 'api' && parts[1] === 'signup') {
       const body = await readBody(req);
@@ -197,6 +336,8 @@ const server = http.createServer(async (req, res) => {
 
       const body = await readBody(req);
       const { from, to, place, month, plan } = body;
+      let reminderHours = Number(body.reminderHours);
+      if (!ALLOWED_REMINDER_HOURS.includes(reminderHours)) reminderHours = 0;
 
       if (!isNonEmptyString(from) || !isNonEmptyString(place) || !isNonEmptyString(month)) {
         return send(res, 400, { error: 'from, place, and month are required' });
@@ -214,6 +355,10 @@ const server = http.createServer(async (req, res) => {
         place: place.trim().slice(0, 120),
         month,
         plan: (plan || '').trim().slice(0, 500),
+        reminderHours,
+        reminderAt: null,
+        reminderSent: false,
+        pushSubscription: null,
         response: null,
         createdAt: Date.now(),
       };
@@ -226,7 +371,7 @@ const server = http.createServer(async (req, res) => {
       const db = loadInvites();
       const invite = db[parts[2]];
       if (!invite) return send(res, 404, { error: 'Invitation not found' });
-      const { userId, ...publicInvite } = invite; // don't leak the sender's userId
+      const { userId, pushSubscription, ...publicInvite } = invite; // don't leak sender data or the raw subscription
       return send(res, 200, publicInvite);
     }
 
@@ -243,9 +388,32 @@ const server = http.createServer(async (req, res) => {
       }
 
       invite.response = { day, month, year };
+      invite.reminderAt = computeReminderAt(invite.response, invite.reminderHours);
+      invite.reminderSent = false;
       saveInvites(db);
-      const { userId, ...publicInvite } = invite;
+      const { userId, pushSubscription, ...publicInvite } = invite;
       return send(res, 200, publicInvite);
+    }
+
+    // ---- POST /api/invites/:id/subscribe  (public — recipient enables reminders) ----
+    if (req.method === 'POST' && parts.length === 4 && parts[0] === 'api' && parts[1] === 'invites' && parts[3] === 'subscribe') {
+      const db = loadInvites();
+      const invite = db[parts[2]];
+      if (!invite) return send(res, 404, { error: 'Invitation not found' });
+
+      const body = await readBody(req);
+      if (!body.subscription || !body.subscription.endpoint) {
+        return send(res, 400, { error: 'A valid push subscription is required' });
+      }
+
+      invite.pushSubscription = body.subscription;
+      // If a response (and therefore a reminder time) already exists but
+      // hadn't been scheduled yet because there was no subscription, compute it now.
+      if (invite.response && invite.reminderHours && !invite.reminderAt) {
+        invite.reminderAt = computeReminderAt(invite.response, invite.reminderHours);
+      }
+      saveInvites(db);
+      return send(res, 200, { ok: true, reminderAt: invite.reminderAt });
     }
 
     send(res, 404, { error: 'Not found' });
