@@ -6,6 +6,12 @@
 <title>Dates</title>
 <meta name="description" content="An invitation, saved just for you.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23241645'/%3E%3Cpath d='M20 35 h60 v30 a8 8 0 0 0 0 16 v9 h-60 v-9 a8 8 0 0 0 0-16 z' fill='none' stroke='%23E8B84B' stroke-width='4'/%3E%3Ctext x='50' y='56' font-family='Georgia,serif' font-style='italic' font-size='22' fill='%23FF4D8D' text-anchor='middle'%3E♥%3C/text%3E%3C/svg%3E">
+<link rel="manifest" href="/manifest.json">
+<link rel="apple-touch-icon" href="/icon.svg">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Dates">
+<meta name="theme-color" content="#241645">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,700;1,9..144,600&family=Space+Grotesk:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
@@ -166,6 +172,37 @@
   textarea::placeholder{color:rgba(246,241,255,0.35);}
   textarea:focus{border-color:var(--gold); background:rgba(255,255,255,0.07);}
   textarea:focus-visible{outline:2px solid var(--gold); outline-offset:2px;}
+
+  select{
+    width:100%;
+    padding:12px 14px;
+    border-radius:10px;
+    border:1px solid rgba(255,255,255,0.14);
+    background:rgba(255,255,255,0.04);
+    color:var(--cream);
+    font-family:inherit;
+    font-size:15px;
+    outline:none;
+    transition:border-color .15s ease, background .15s ease;
+  }
+  select:focus{border-color:var(--gold); background:rgba(255,255,255,0.07);}
+  select:focus-visible{outline:2px solid var(--gold); outline-offset:2px;}
+  select option{background:var(--plum); color:var(--cream);}
+
+  .reminder-box{
+    margin-top:20px;
+    padding:16px 18px;
+    background:rgba(255,255,255,0.04);
+    border:1px solid rgba(255,255,255,0.1);
+    border-radius:14px;
+  }
+  .reminder-label{
+    font-family:'Fraunces', serif;
+    font-style:italic;
+    font-size:15px;
+    color:var(--cream);
+    margin-bottom:8px;
+  }
   input:focus{border-color:var(--gold); background:rgba(255,255,255,0.07);}
   input:focus-visible{outline:2px solid var(--gold); outline-offset:2px;}
   .primary-btn{
@@ -536,6 +573,16 @@
       <label for="in-plan" data-i18n="setup.plan">What's the plan? (optional)</label>
       <textarea id="in-plan" maxlength="500" data-i18n-ph="setup.planPh" placeholder="A little preview of the date..."></textarea>
 
+      <label for="in-reminder" data-i18n="setup.reminder">Remind them</label>
+      <select id="in-reminder">
+        <option value="0" data-i18n="setup.reminderNone">No reminder</option>
+        <option value="1" data-i18n="setup.reminder1h">1 hour before</option>
+        <option value="3" data-i18n="setup.reminder3h">3 hours before</option>
+        <option value="24" data-i18n="setup.reminder1d">1 day before</option>
+        <option value="48" data-i18n="setup.reminder2d">2 days before</option>
+        <option value="168" data-i18n="setup.reminder1w">1 week before</option>
+      </select>
+
       <button class="primary-btn" id="btn-create" type="button" data-i18n="setup.create">Create invitation</button>
       <button class="link-btn" id="btn-back-portal" data-i18n="setup.backToPortal">← Back to your invitations</button>
     </div>
@@ -606,6 +653,13 @@
       <div class="plan-quote hidden" id="plan-quote-confirm">
         <div class="plan-label" data-i18n="calendar.plan">The plan</div>
         <div class="plan-text" id="plan-text-confirm"></div>
+      </div>
+      <div class="reminder-box hidden" id="reminder-box">
+        <div class="reminder-label" data-i18n="reminder.label">Want a reminder?</div>
+        <p class="fineprint" id="reminder-ios-note" data-i18n="reminder.iosNote">To get a reminder, first add Dates to your Home Screen: tap the Share icon below, then "Add to Home Screen".</p>
+        <button class="primary-btn hidden" id="btn-install" type="button" data-i18n="reminder.addHome">Add to Home Screen</button>
+        <button class="primary-btn hidden" id="btn-enable-reminders" type="button" data-i18n="reminder.enable">Remind me 🔔</button>
+        <p class="fineprint" id="reminder-status">&nbsp;</p>
       </div>
       <p class="fineprint" data-i18n="confirm.footnote">This confirmation is stored in this browser. The invitation link remains shareable.</p>
       <button class="link-btn" id="btn-change-date" data-i18n="confirm.changeDate">Choose another date</button>
@@ -697,6 +751,24 @@
       "setup.backToPortal": "← Back to your invitations",
       "setup.creating": "Creating...",
       "setup.fillRequired": "Please enter your name, place, and month.",
+      "setup.reminder": "Remind them",
+      "setup.reminderNone": "No reminder",
+      "setup.reminder1h": "1 hour before",
+      "setup.reminder3h": "3 hours before",
+      "setup.reminder1d": "1 day before",
+      "setup.reminder2d": "2 days before",
+      "setup.reminder1w": "1 week before",
+
+      "reminder.label": "Want a reminder?",
+      "reminder.iosNote": "To get a reminder, first add Dates to your Home Screen: tap the Share icon below, then \"Add to Home Screen\".",
+      "reminder.addHome": "Add to Home Screen",
+      "reminder.enable": "Remind me 🔔",
+      "reminder.on": "Reminders are on ✓",
+      "reminder.notSupported": "Reminders aren't supported in this browser.",
+      "reminder.permissionDenied": "Notifications are blocked for this site — enable them in your browser settings to get a reminder.",
+      "reminder.error": "Couldn't turn on reminders. Check the connection and try again.",
+      "reminder.enabling": "Turning on...",
+      "reminder.installed": "Added! Reopen Dates from your Home Screen to turn on reminders.",
 
       "created.eyebrow": "✦ Invitation ready ✦",
       "created.headline": "Send the link",
@@ -808,6 +880,24 @@
       "setup.backToPortal": "← Retour à vos invitations",
       "setup.creating": "Création en cours...",
       "setup.fillRequired": "Merci d'indiquer votre nom, le lieu et le mois.",
+      "setup.reminder": "Rappel",
+      "setup.reminderNone": "Aucun rappel",
+      "setup.reminder1h": "1 heure avant",
+      "setup.reminder3h": "3 heures avant",
+      "setup.reminder1d": "1 jour avant",
+      "setup.reminder2d": "2 jours avant",
+      "setup.reminder1w": "1 semaine avant",
+
+      "reminder.label": "Envie d'un rappel ?",
+      "reminder.iosNote": "Pour recevoir un rappel, ajoutez d'abord Dates à l'écran d'accueil : appuyez sur l'icône Partager ci-dessous, puis « Sur l'écran d'accueil ».",
+      "reminder.addHome": "Ajouter à l'écran d'accueil",
+      "reminder.enable": "Me le rappeler 🔔",
+      "reminder.on": "Rappels activés ✓",
+      "reminder.notSupported": "Les rappels ne sont pas pris en charge par ce navigateur.",
+      "reminder.permissionDenied": "Les notifications sont bloquées pour ce site — activez-les dans les réglages de votre navigateur pour recevoir un rappel.",
+      "reminder.error": "Impossible d'activer les rappels. Vérifiez la connexion et réessayez.",
+      "reminder.enabling": "Activation...",
+      "reminder.installed": "Ajouté ! Rouvrez Dates depuis l'écran d'accueil pour activer les rappels.",
 
       "created.eyebrow": "✦ Invitation prête ✦",
       "created.headline": "Envoyez le lien",
@@ -976,6 +1066,107 @@
     return res.json();
   }
 
+  // ---- Reminders: real push notifications ----
+  // Converts the VAPID public key (base64url text) into the byte format
+  // the browser's Push API expects.
+  function urlBase64ToUint8Array(base64String) {
+    const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
+    const base64 = (base64String + padding).replace(/-/g, "+").replace(/_/g, "/");
+    const rawData = atob(base64);
+    const outputArray = new Uint8Array(rawData.length);
+    for (let i = 0; i < rawData.length; i++) outputArray[i] = rawData.charCodeAt(i);
+    return outputArray;
+  }
+
+  const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+  const isStandalone =
+    window.navigator.standalone === true ||
+    (window.matchMedia && window.matchMedia("(display-mode: standalone)").matches);
+
+  // Android/desktop Chrome fires this when the site qualifies as
+  // installable — capturing it lets us show our own "Add to Home Screen"
+  // button instead of waiting for the browser's own mini-infobar.
+  // iOS never fires this event; there is no way to trigger that prompt
+  // programmatically there — it's a deliberate Apple restriction.
+  let deferredInstallPrompt = null;
+  window.addEventListener("beforeinstallprompt", (e) => {
+    e.preventDefault();
+    deferredInstallPrompt = e;
+    if (currentView === "confirm") updateReminderBox();
+  });
+
+  function updateReminderBox() {
+    const box = $("reminder-box");
+    if (!invite || !invite.reminderHours) {
+      box.classList.add("hidden");
+      return;
+    }
+    box.classList.remove("hidden");
+
+    const iosBlocked = isIOS && !isStandalone;
+    $("reminder-ios-note").classList.toggle("hidden", !iosBlocked);
+    $("btn-enable-reminders").classList.toggle("hidden", iosBlocked);
+    $("btn-install").classList.toggle("hidden", isStandalone || !deferredInstallPrompt);
+    $("reminder-status").textContent = "\u00A0";
+  }
+
+  $("btn-install").addEventListener("click", async () => {
+    if (!deferredInstallPrompt) return;
+    deferredInstallPrompt.prompt();
+    const choice = await deferredInstallPrompt.userChoice;
+    deferredInstallPrompt = null;
+    $("btn-install").classList.add("hidden");
+    if (choice.outcome === "accepted") {
+      $("reminder-status").textContent = t("reminder.installed");
+    }
+  });
+
+  $("btn-enable-reminders").addEventListener("click", async () => {
+    const btn = $("btn-enable-reminders");
+    const status = $("reminder-status");
+
+    if (!("Notification" in window) || !("serviceWorker" in navigator) || !("PushManager" in window)) {
+      status.textContent = t("reminder.notSupported");
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = t("reminder.enabling");
+
+    try {
+      const permission = await Notification.requestPermission();
+      if (permission !== "granted") {
+        status.textContent = t("reminder.permissionDenied");
+        return;
+      }
+
+      const registration = await navigator.serviceWorker.register("/sw.js");
+      await navigator.serviceWorker.ready;
+
+      const { publicKey } = await (await fetch(API_BASE + "/api/vapid-public-key")).json();
+      const subscription = await registration.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: urlBase64ToUint8Array(publicKey)
+      });
+
+      const res = await fetch(API_BASE + "/api/invites/" + currentId + "/subscribe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ subscription: subscription.toJSON() })
+      });
+      if (!res.ok) throw new Error((await res.json()).error || "Subscribe failed");
+
+      status.textContent = t("reminder.on");
+      btn.classList.add("hidden");
+    } catch (error) {
+      console.error("ENABLE REMINDERS ERROR:", error);
+      status.textContent = t("reminder.error");
+    } finally {
+      btn.disabled = false;
+      btn.textContent = t("reminder.enable");
+    }
+  });
+
   function stopPolling() {
     if (pollTimer) { clearInterval(pollTimer); pollTimer = null; }
   }
@@ -1115,6 +1306,7 @@
 
   $("btn-portal-new").addEventListener("click", () => {
     Object.values(fields).forEach(f => f.value = "");
+    $("in-reminder").value = "0";
     validateSetup();
     show("setup");
   });
@@ -1224,6 +1416,7 @@
       const place = clean(fields.place.value, 100);
       const month = String(fields.month.value || "");
       const plan = clean(fields.plan.value, 500);
+      const reminderHours = Number($("in-reminder").value) || 0;
 
       if (!from || !place || !validMonth(month)) {
         alert(t("setup.fillRequired"));
@@ -1233,9 +1426,9 @@
       btn.disabled = true;
       btn.textContent = t("setup.creating");
 
-      const { id } = await apiCreateInvite({ from, to, place, month, plan });
+      const { id } = await apiCreateInvite({ from, to, place, month, plan, reminderHours });
       currentId = id;
-      invite = { from, to, place, month, plan, createdAt: Date.now() };
+      invite = { from, to, place, month, plan, reminderHours, createdAt: Date.now() };
 
       const url = location.href.split("?")[0] + "?id=" + id;
 
@@ -1328,6 +1521,7 @@
   $("btn-new").addEventListener("click", () => {
     stopPolling();
     Object.values(fields).forEach(f => f.value = "");
+    $("in-reminder").value = "0";
     validateSetup();
     show("setup");
   });
@@ -1465,6 +1659,7 @@
       $("plan-quote-confirm").classList.add("hidden");
     }
 
+    updateReminderBox();
     show("confirm");
   }
 
