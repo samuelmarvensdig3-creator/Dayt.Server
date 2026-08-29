@@ -78,6 +78,8 @@
     transform:translateY(-50%);
     box-shadow:0 0 0 1px rgba(232,184,75,0.25) inset;
   }
+  .ticket::before{ left:-13px; }
+  .ticket::after{ right:-13px; }
   .brandmark{
     display:flex;
     align-items:center;
@@ -525,7 +527,7 @@
 
       <div id="signup-form" class="hidden">
         <label for="signup-displayname" data-i18n="welcome.yourName">Your name</label>
-        <input type="text" id="signup-displayname" maxlength="60" data-i18n-ph="welcome.yourNamePh" placeholder="What should we call you?">
+        <input type="text" id="signup-displayname" maxlength="60" autocomplete="off" autocorrect="off" data-i18n-ph="welcome.yourNamePh" placeholder="What should we call you?">
 
         <label for="signup-username" data-i18n="welcome.chooseUsername">Choose a username</label>
         <input type="text" id="signup-username" maxlength="60" autocomplete="username" data-i18n-ph="welcome.usernamePh" placeholder="yourname">
@@ -559,10 +561,10 @@
       <p class="sub" data-i18n="setup.sub">Choose the month and place. They'll pick the day that fits.</p>
 
       <label for="in-from" data-i18n="setup.yourName">Your name</label>
-      <input type="text" id="in-from" maxlength="60" data-i18n-ph="setup.yourNamePh" placeholder="Who's asking?">
+      <input type="text" id="in-from" maxlength="60" autocomplete="off" autocorrect="off" data-i18n-ph="setup.yourNamePh" placeholder="Who's asking?">
 
       <label for="in-to" data-i18n="setup.theirName">Their name (optional)</label>
-      <input type="text" id="in-to" maxlength="60" data-i18n-ph="setup.theirNamePh" placeholder="Who's this for?">
+      <input type="text" id="in-to" maxlength="60" autocomplete="off" autocorrect="off" data-i18n-ph="setup.theirNamePh" placeholder="Who's this for?">
 
       <label for="in-place" data-i18n="setup.place">Place</label>
       <input type="text" id="in-place" maxlength="100" data-i18n-ph="setup.placePh" placeholder="Where should this happen?">
