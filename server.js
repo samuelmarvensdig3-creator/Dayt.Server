@@ -109,6 +109,7 @@ function normalizeUsername(name) {
 
 // Allowed reminder lead times, in hours. 0 means "no reminder".
 const ALLOWED_REMINDER_HOURS = [0, 1, 3, 24, 48, 168];
+const ALLOWED_CATEGORIES = ['date', 'friends', 'professional', 'group'];
 
 // We only collect a day/month/year for the date, not a time of day, so
 // reminders are computed against a fixed reference point: noon UTC on the
@@ -131,9 +132,17 @@ function checkAndSendReminders() {
     if (!inv.reminderAt || inv.reminderSent || !inv.pushSubscription) return;
     if (inv.reminderAt > Date.now()) return;
 
+    const CATEGORY_NOUN = {
+      date: 'date',
+      friends: 'hangout',
+      professional: 'meeting',
+      group: 'get-together',
+    };
+    const noun = CATEGORY_NOUN[inv.category] || 'plan';
+
     const payload = JSON.stringify({
       title: 'Dates',
-      body: `Reminder: your date with ${inv.from} at ${inv.place} is coming up.`,
+      body: `Reminder: your ${noun} with ${inv.from} at ${inv.place} is coming up.`,
       url: '/?id=' + id,
     });
 
@@ -338,6 +347,8 @@ const server = http.createServer(async (req, res) => {
       const { from, to, place, month, plan } = body;
       let reminderHours = Number(body.reminderHours);
       if (!ALLOWED_REMINDER_HOURS.includes(reminderHours)) reminderHours = 0;
+      let category = String(body.category || 'date');
+      if (!ALLOWED_CATEGORIES.includes(category)) category = 'date';
 
       if (!isNonEmptyString(from) || !isNonEmptyString(place) || !isNonEmptyString(month)) {
         return send(res, 400, { error: 'from, place, and month are required' });
@@ -350,6 +361,7 @@ const server = http.createServer(async (req, res) => {
       const db = loadInvites();
       db[id] = {
         userId,
+        category,
         from: from.trim().slice(0, 80),
         to: (to || '').trim().slice(0, 80),
         place: place.trim().slice(0, 120),
