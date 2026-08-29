@@ -400,6 +400,36 @@
   }
   .tab-btn:focus-visible{outline:2px solid var(--gold); outline-offset:2px;}
 
+  .category-row{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:8px;
+    margin:6px 0 16px;
+  }
+  .category-btn{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:7px;
+    padding:12px 10px;
+    border-radius:12px;
+    border:1px solid rgba(255,255,255,0.12);
+    background:rgba(255,255,255,0.03);
+    color:var(--lav);
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:600;
+    font-size:13.5px;
+    cursor:pointer;
+    transition:background .15s ease, border-color .15s ease, color .15s ease;
+  }
+  .category-btn.active{
+    background:rgba(232,184,75,0.14);
+    border-color:var(--gold);
+    color:var(--cream);
+  }
+  .category-btn:focus-visible{outline:2px solid var(--gold); outline-offset:2px;}
+  .category-emoji{font-size:15px;}
+
   .invite-card{
     background:rgba(255,255,255,0.04);
     border:1px solid rgba(255,255,255,0.08);
@@ -560,6 +590,22 @@
       <h1 data-i18n="setup.headline">Set the scene</h1>
       <p class="sub" data-i18n="setup.sub">Choose the month and place. They'll pick the day that fits.</p>
 
+      <label data-i18n="setup.category">What kind of plan is this?</label>
+      <div class="category-row" id="category-row" role="group" aria-label="Occasion type">
+        <button type="button" class="category-btn active" id="cat-date" data-category="date">
+          <span class="category-emoji">❤️</span><span data-i18n="setup.categoryDate">Date</span>
+        </button>
+        <button type="button" class="category-btn" id="cat-friends" data-category="friends">
+          <span class="category-emoji">🎉</span><span data-i18n="setup.categoryFriends">Friends</span>
+        </button>
+        <button type="button" class="category-btn" id="cat-professional" data-category="professional">
+          <span class="category-emoji">💼</span><span data-i18n="setup.categoryProfessional">Professional</span>
+        </button>
+        <button type="button" class="category-btn" id="cat-group" data-category="group">
+          <span class="category-emoji">👥</span><span data-i18n="setup.categoryGroup">Group</span>
+        </button>
+      </div>
+
       <label for="in-from" data-i18n="setup.yourName">Your name</label>
       <input type="text" id="in-from" maxlength="60" autocomplete="off" autocorrect="off" data-i18n-ph="setup.yourNamePh" placeholder="Who's asking?">
 
@@ -617,8 +663,8 @@
       <p class="sub" id="ask-sub"></p>
 
       <div class="decision-zone" id="decision-zone">
-        <button class="yes-btn" id="btn-yes" type="button" data-i18n="ask.yes">Yes ❤️</button>
-        <button class="no-btn" id="btn-no" type="button" data-i18n="ask.no">No</button>
+        <button class="yes-btn" id="btn-yes" type="button">Yes ❤️</button>
+        <button class="no-btn" id="btn-no" type="button">No</button>
       </div>
       <p class="taunt" id="taunt"></p>
 
@@ -793,12 +839,32 @@
       "created.copyInstructions": "Copy the link below and send it. This page will update on its own the moment they pick a day.",
 
       "ask.eyebrow": "✦ You've been invited ✦",
-      "ask.yes": "Yes ❤️",
-      "ask.no": "No",
       "ask.footnote": "A seat has already been saved for you.",
-      "ask.headlineNamed": "{{name}}, will you meet me?",
-      "ask.headlineGeneric": "Will you meet me?",
       "ask.subLine": "{{from}} is inviting you to {{place}}, sometime in {{month}}.",
+
+      "ask.headline.date.named": "{{name}}, will you meet me?",
+      "ask.headline.date.generic": "Will you meet me?",
+      "ask.headline.friends.named": "{{name}}, want to hang out?",
+      "ask.headline.friends.generic": "Want to hang out?",
+      "ask.headline.professional.named": "{{name}}, here's a meeting invite",
+      "ask.headline.professional.generic": "You're invited to a meeting",
+      "ask.headline.group.named": "{{name}}, you're invited",
+      "ask.headline.group.generic": "You're invited to a get-together",
+
+      "ask.yesLabel.date": "Yes ❤️",
+      "ask.yesLabel.friends": "I'm in 🎉",
+      "ask.yesLabel.professional": "Accept",
+      "ask.yesLabel.group": "Count me in",
+      "ask.noLabel.date": "No",
+      "ask.noLabel.friends": "Not this time",
+      "ask.noLabel.professional": "Decline",
+      "ask.noLabel.group": "Can't make it",
+
+      "setup.category": "What kind of plan is this?",
+      "setup.categoryDate": "Date",
+      "setup.categoryFriends": "Friends",
+      "setup.categoryProfessional": "Professional",
+      "setup.categoryGroup": "Group",
 
       "calendar.eyebrow": "✦ Almost there ✦",
       "calendar.headline": "Pick your day",
@@ -821,6 +887,7 @@
       "declined.headline": "No hard feelings.",
       "declined.reconsider": "Actually... maybe yes",
       "declined.sub": "{{name}} will survive. Probably. If you change your mind, the invitation is still here.",
+      "declined.subNeutral": "No worries at all, {{name}} will understand. You can still change your mind — the invitation is still here.",
       "declined.taunts": [
         "Okay, I respect the honesty.",
         "That was a very decisive no.",
@@ -922,12 +989,32 @@
       "created.copyInstructions": "Copiez le lien ci-dessous et envoyez-le. Cette page se mettra à jour automatiquement dès que la date sera choisie.",
 
       "ask.eyebrow": "✦ Vous avez été invité(e) ✦",
-      "ask.yes": "Oui ❤️",
-      "ask.no": "Non",
       "ask.footnote": "Une place vous a déjà été réservée.",
-      "ask.headlineNamed": "{{name}}, veux-tu me retrouver ?",
-      "ask.headlineGeneric": "Veux-tu me retrouver ?",
       "ask.subLine": "{{from}} t'invite à {{place}}, quelque part en {{month}}.",
+
+      "ask.headline.date.named": "{{name}}, veux-tu me retrouver ?",
+      "ask.headline.date.generic": "Veux-tu me retrouver ?",
+      "ask.headline.friends.named": "{{name}}, ça te dit de te retrouver ?",
+      "ask.headline.friends.generic": "Ça te dit de se retrouver ?",
+      "ask.headline.professional.named": "{{name}}, voici une invitation à une réunion",
+      "ask.headline.professional.generic": "Vous êtes invité(e) à une réunion",
+      "ask.headline.group.named": "{{name}}, tu es invité(e)",
+      "ask.headline.group.generic": "Vous êtes invité(e) à une sortie de groupe",
+
+      "ask.yesLabel.date": "Oui ❤️",
+      "ask.yesLabel.friends": "Je suis partant(e) 🎉",
+      "ask.yesLabel.professional": "Accepter",
+      "ask.yesLabel.group": "Je viens",
+      "ask.noLabel.date": "Non",
+      "ask.noLabel.friends": "Pas cette fois",
+      "ask.noLabel.professional": "Refuser",
+      "ask.noLabel.group": "Je ne peux pas venir",
+
+      "setup.category": "Quel genre de plan est-ce ?",
+      "setup.categoryDate": "Rendez-vous",
+      "setup.categoryFriends": "Amis",
+      "setup.categoryProfessional": "Professionnel",
+      "setup.categoryGroup": "Groupe",
 
       "calendar.eyebrow": "✦ Presque là ✦",
       "calendar.headline": "Choisis ton jour",
@@ -950,6 +1037,7 @@
       "declined.headline": "Pas de rancune.",
       "declined.reconsider": "En fait... peut-être oui",
       "declined.sub": "{{name}} survivra. Probablement. Si tu changes d'avis, l'invitation est toujours là.",
+      "declined.subNeutral": "Pas de souci, {{name}} comprendra. Tu peux encore changer d'avis — l'invitation est toujours là.",
       "declined.taunts": [
         "D'accord, je respecte l'honnêteté.",
         "Voilà un non très décidé.",
@@ -1018,7 +1106,10 @@
     if (currentView === "calendar" && invite) { renderCalendar(invite); return; }
     if (currentView === "confirm" && invite && invite.response) { renderConfirm(invite.response); return; }
     if (currentView === "declined" && invite) {
-      $("declined-sub").textContent = t("declined.sub", { name: invite.from });
+      const category = CATEGORIES.includes(invite.category) ? invite.category : "date";
+      $("declined-sub").textContent = category === "date"
+        ? t("declined.sub", { name: invite.from })
+        : t("declined.subNeutral", { name: invite.from });
     }
   }
 
@@ -1041,6 +1132,15 @@
   let selectedDate = null;
   let currentId = null;
   let pollTimer = null;
+  let selectedCategory = "date";
+
+  const CATEGORIES = ["date", "friends", "professional", "group"];
+  CATEGORIES.forEach(cat => {
+    $("cat-" + cat).addEventListener("click", () => {
+      selectedCategory = cat;
+      CATEGORIES.forEach(c => $("cat-" + c).classList.toggle("active", c === cat));
+    });
+  });
 
   async function apiCreateInvite(data) {
     const res = await fetch(API_BASE + "/api/invites", {
@@ -1309,6 +1409,8 @@
   $("btn-portal-new").addEventListener("click", () => {
     Object.values(fields).forEach(f => f.value = "");
     $("in-reminder").value = "0";
+    selectedCategory = "date";
+    CATEGORIES.forEach(c => $("cat-" + c).classList.toggle("active", c === "date"));
     validateSetup();
     show("setup");
   });
@@ -1419,6 +1521,7 @@
       const month = String(fields.month.value || "");
       const plan = clean(fields.plan.value, 500);
       const reminderHours = Number($("in-reminder").value) || 0;
+      const category = selectedCategory;
 
       if (!from || !place || !validMonth(month)) {
         alert(t("setup.fillRequired"));
@@ -1428,9 +1531,9 @@
       btn.disabled = true;
       btn.textContent = t("setup.creating");
 
-      const { id } = await apiCreateInvite({ from, to, place, month, plan, reminderHours });
+      const { id } = await apiCreateInvite({ from, to, place, month, plan, reminderHours, category });
       currentId = id;
-      invite = { from, to, place, month, plan, reminderHours, createdAt: Date.now() };
+      invite = { from, to, place, month, plan, reminderHours, category, createdAt: Date.now() };
 
       const url = location.href.split("?")[0] + "?id=" + id;
 
@@ -1524,20 +1627,27 @@
     stopPolling();
     Object.values(fields).forEach(f => f.value = "");
     $("in-reminder").value = "0";
+    selectedCategory = "date";
+    CATEGORIES.forEach(c => $("cat-" + c).classList.toggle("active", c === "date"));
     validateSetup();
     show("setup");
   });
 
   function renderAsk(data) {
+    const category = CATEGORIES.includes(data.category) ? data.category : "date";
+
     $("ask-headline").textContent = data.to
-      ? t("ask.headlineNamed", { name: data.to })
-      : t("ask.headlineGeneric");
+      ? t("ask.headline." + category + ".named", { name: data.to })
+      : t("ask.headline." + category + ".generic");
 
     $("ask-sub").textContent = t("ask.subLine", {
       from: data.from,
       place: data.place,
       month: monthLabel(data.month)
     });
+
+    $("btn-yes").textContent = t("ask.yesLabel." + category);
+    $("btn-no").textContent = t("ask.noLabel." + category);
 
     $("taunt").textContent = "";
     $("btn-no").style.left = "68%";
@@ -1548,13 +1658,19 @@
   }
 
   $("btn-no").addEventListener("click", () => {
-    const taunts = t("declined.taunts");
-    $("taunt").textContent = taunts[Math.floor(Math.random() * taunts.length)];
+    const category = CATEGORIES.includes(invite.category) ? invite.category : "date";
+
+    if (category === "date") {
+      const taunts = t("declined.taunts");
+      $("taunt").textContent = taunts[Math.floor(Math.random() * taunts.length)];
+    }
 
     setTimeout(() => {
-      $("declined-sub").textContent = t("declined.sub", { name: invite.from });
+      $("declined-sub").textContent = category === "date"
+        ? t("declined.sub", { name: invite.from })
+        : t("declined.subNeutral", { name: invite.from });
       show("declined");
-    }, 350);
+    }, category === "date" ? 350 : 0);
   });
 
   $("btn-yes").addEventListener("click", () => renderCalendar(invite));
