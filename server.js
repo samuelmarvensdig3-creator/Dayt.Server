@@ -372,6 +372,9 @@ const server = http.createServer(async (req, res) => {
         reminderSent: false,
         pushSubscription: null,
         response: null,
+        senderPublicKey: null,
+        recipientPublicKey: null,
+        messages: [],
         createdAt: Date.now(),
       };
       saveInvites(db);
@@ -383,7 +386,9 @@ const server = http.createServer(async (req, res) => {
       const db = loadInvites();
       const invite = db[parts[2]];
       if (!invite) return send(res, 404, { error: 'Invitation not found' });
-      const { userId, pushSubscription, ...publicInvite } = invite; // don't leak sender data or the raw subscription
+      // Chat keys/messages have their own endpoints — keep this response lean
+      // and don't leak sender-only data (userId, the raw push subscription).
+      const { userId, pushSubscription, senderPublicKey, recipientPublicKey, messages, ...publicInvite } = invite;
       return send(res, 200, publicInvite);
     }
 
@@ -403,8 +408,82 @@ const server = http.createServer(async (req, res) => {
       invite.reminderAt = computeReminderAt(invite.response, invite.reminderHours);
       invite.reminderSent = false;
       saveInvites(db);
-      const { userId, pushSubscription, ...publicInvite } = invite;
+      const { userId, pushSubscription, senderPublicKey, recipientPublicKey, messages, ...publicInvite } = invite;
       return send(res, 200, publicInvite);
+    }
+
+    // ---- POST /api/invites/:id/publickey  (public — either party publishes
+    // ---- their chat public key; the server never sees a private key) ----
+    if (req.method === 'POST' && parts.length === 4 && parts[0] === 'api' && parts[1] === 'invites' && parts[3] === 'publickey') {
+      const db = loadInvites();
+      const invite = db[parts[2]];
+      if (!invite) return send(res, 404, { error: 'Invitation not found' });
+
+      const body = await readBody(req);
+      const role = body.role;
+      if (role !== 'sender' && role !== 'recipient') {
+        return send(res, 400, { error: 'role must be "sender" or "recipient"' });
+      }
+      if (!body.publicKeyJwk || typeof body.publicKeyJwk !== 'object' || body.publicKeyJwk.kty !== 'EC') {
+        return send(res, 400, { error: 'A valid EC public key (JWK) is required' });
+      }
+
+      invite[role === 'sender' ? 'senderPublicKey' : 'recipientPublicKey'] = body.publicKeyJwk;
+      saveInvites(db);
+      return send(res, 200, {
+        senderPublicKey: invite.senderPublicKey,
+        recipientPublicKey: invite.recipientPublicKey,
+      });
+    }
+
+    // ---- GET /api/invites/:id/messages  (public — fetch the chat thread) ----
+    // Only ever returns ciphertext + the two public keys. The server has no
+    // way to read message content — that's the whole point.
+    if (req.method === 'GET' && parts.length === 4 && parts[0] === 'api' && parts[1] === 'invites' && parts[3] === 'messages') {
+      const db = loadInvites();
+      const invite = db[parts[2]];
+      if (!invite) return send(res, 404, { error: 'Invitation not found' });
+      return send(res, 200, {
+        senderPublicKey: invite.senderPublicKey,
+        recipientPublicKey: invite.recipientPublicKey,
+        messages: invite.messages || [],
+      });
+    }
+
+    // ---- POST /api/invites/:id/messages  (public — send an already-encrypted message) ----
+    if (req.method === 'POST' && parts.length === 4 && parts[0] === 'api' && parts[1] === 'invites' && parts[3] === 'messages') {
+      const db = loadInvites();
+      const invite = db[parts[2]];
+      if (!invite) return send(res, 404, { error: 'Invitation not found' });
+
+      const body = await readBody(req);
+      const role = body.role;
+      if (role !== 'sender' && role !== 'recipient') {
+        return send(res, 400, { error: 'role must be "sender" or "recipient"' });
+      }
+      if (!isNonEmptyString(body.iv) || !isNonEmptyString(body.ciphertext)) {
+        return send(res, 400, { error: 'iv and ciphertext are required' });
+      }
+      if (body.ciphertext.length > 20000) {
+        return send(res, 400, { error: 'Message too long' });
+      }
+
+      const message = {
+        id: crypto.randomBytes(6).toString('hex'),
+        role,
+        iv: body.iv,
+        ciphertext: body.ciphertext,
+        createdAt: Date.now(),
+      };
+
+      invite.messages = invite.messages || [];
+      invite.messages.push(message);
+      // Cap history so the JSON file can't grow without bound.
+      if (invite.messages.length > 300) {
+        invite.messages = invite.messages.slice(-300);
+      }
+      saveInvites(db);
+      return send(res, 200, message);
     }
 
     // ---- POST /api/invites/:id/subscribe  (public — recipient enables reminders) ----
