@@ -1597,9 +1597,10 @@
     chatRole = role;
     chatSharedKey = null;
     seenMessageIds.clear();
+    const waitingEl = $("chat-waiting");
     $("chat-thread").innerHTML = "";
-    $("chat-thread").appendChild($("chat-waiting"));
-    $("chat-waiting").classList.remove("hidden");
+    $("chat-thread").appendChild(waitingEl);
+    waitingEl.classList.remove("hidden");
     $("chat-input").value = "";
     $("chat-input").disabled = true;
     $("btn-chat-send").disabled = true;
@@ -2065,6 +2066,8 @@
       $("declined-sub").textContent = category === "date"
         ? t("declined.sub", { name: invite.from })
         : t("declined.subNeutral", { name: invite.from });
+      // A professional decline is final — no "actually, maybe yes" option.
+      $("btn-reconsider").classList.toggle("hidden", category === "professional");
       show("declined");
     }, category === "date" ? 350 : 0);
   });
