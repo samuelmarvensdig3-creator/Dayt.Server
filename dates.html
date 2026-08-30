@@ -205,6 +205,75 @@
     color:var(--cream);
     margin-bottom:8px;
   }
+
+  .chat-thread{
+    height:280px;
+    overflow-y:auto;
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    padding:14px;
+    margin-top:14px;
+    background:rgba(0,0,0,0.15);
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:14px;
+  }
+  .chat-bubble{
+    max-width:78%;
+    padding:9px 13px;
+    border-radius:14px;
+    font-size:14px;
+    line-height:1.4;
+    word-wrap:break-word;
+  }
+  .chat-bubble.mine{
+    align-self:flex-end;
+    background:linear-gradient(135deg, var(--gold), #F2CE72);
+    color:var(--ink);
+    border-bottom-right-radius:4px;
+  }
+  .chat-bubble.theirs{
+    align-self:flex-start;
+    background:rgba(255,255,255,0.08);
+    color:var(--cream);
+    border-bottom-left-radius:4px;
+  }
+  .chat-bubble-time{
+    display:block;
+    font-size:10px;
+    opacity:0.6;
+    margin-top:3px;
+  }
+  .chat-input-row{
+    display:flex;
+    gap:8px;
+    margin-top:12px;
+  }
+  .chat-input-row input{
+    flex:1;
+    padding:12px 14px;
+    border-radius:10px;
+    border:1px solid rgba(255,255,255,0.14);
+    background:rgba(255,255,255,0.04);
+    color:var(--cream);
+    font-family:inherit;
+    font-size:14.5px;
+  }
+  .chat-input-row input:disabled{opacity:0.5;}
+  .chat-send-btn{
+    padding:0 18px;
+    border-radius:10px;
+    border:none;
+    background:var(--gold);
+    color:var(--ink);
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:700;
+    font-size:13.5px;
+    cursor:pointer;
+  }
+  .chat-send-btn:disabled{opacity:0.5; cursor:not-allowed;}
+  .chat-send-btn:focus-visible{outline:2px solid #fff; outline-offset:2px;}
+
   input:focus{border-color:var(--gold); background:rgba(255,255,255,0.07);}
   input:focus-visible{outline:2px solid var(--gold); outline-offset:2px;}
   .primary-btn{
@@ -261,6 +330,30 @@
     z-index:1;
   }
   .no-btn:focus-visible{outline:2px solid var(--rose); outline-offset:2px;}
+
+  /* Professional category: a plain, equal-weight Yes/No choice — no
+     size difference, no off-center placement, no game mechanic. */
+  .decision-zone.neutral{
+    height:auto;
+    display:flex;
+    gap:12px;
+    margin-top:14px;
+  }
+  .decision-zone.neutral .yes-btn,
+  .decision-zone.neutral .no-btn{
+    position:static;
+    flex:1;
+    transform:none !important;
+    background:rgba(255,255,255,0.05);
+    color:var(--cream);
+    border:1px solid rgba(255,255,255,0.16);
+    box-shadow:none;
+    text-align:center;
+  }
+  .decision-zone.neutral .yes-btn:hover,
+  .decision-zone.neutral .no-btn:hover{
+    background:rgba(255,255,255,0.09);
+  }
 
   .taunt{
     text-align:center;
@@ -476,6 +569,21 @@
     background:rgba(126,214,165,0.16);
     color:#7ED6A5;
   }
+  .invite-card-chat-btn{
+    display:block;
+    margin-top:10px;
+    padding:6px 12px;
+    border-radius:8px;
+    border:1px solid rgba(255,255,255,0.14);
+    background:rgba(255,255,255,0.03);
+    color:var(--lav);
+    font-family:'Space Grotesk', sans-serif;
+    font-size:12px;
+    font-weight:600;
+    cursor:pointer;
+  }
+  .invite-card-chat-btn:hover{background:rgba(255,255,255,0.07); color:var(--cream);}
+  .invite-card-chat-btn:focus-visible{outline:2px solid var(--gold); outline-offset:2px;}
 
   .hidden{display:none !important;}
 
@@ -648,6 +756,7 @@
       </div>
       <button class="primary-btn" id="btn-copy" data-i18n="created.copyLink">Copy invitation link</button>
       <button class="primary-btn" id="btn-share" type="button" style="margin-top:10px;" data-i18n="created.share">Share invitation</button>
+      <button class="primary-btn" id="btn-created-chat" type="button" style="margin-top:10px;" data-i18n="chat.open">💬 Chat</button>
       <button class="link-btn" id="btn-open" data-i18n="created.open">Open invitation</button>
       <button class="link-btn" id="btn-new" data-i18n="created.another">Create another invitation</button>
       <button class="link-btn" id="btn-created-portal" data-i18n="portal.backLink">Back to your invitations</button>
@@ -710,6 +819,7 @@
         <p class="fineprint" id="reminder-status">&nbsp;</p>
       </div>
       <p class="fineprint" data-i18n="confirm.footnote">This confirmation is stored in this browser. The invitation link remains shareable.</p>
+      <button class="primary-btn" id="btn-open-chat" type="button" style="margin-top:10px;" data-i18n="chat.open">💬 Chat</button>
       <button class="link-btn" id="btn-change-date" data-i18n="confirm.changeDate">Choose another date</button>
     </div>
 
@@ -726,6 +836,21 @@
       <div class="eyebrow" data-i18n="error.eyebrow">✦ Oops ✦</div>
       <h1 data-i18n="error.headline">That invitation isn't valid.</h1>
       <p class="sub" data-i18n="error.sub">The link may be incomplete or corrupted. Ask the sender to create a fresh invitation.</p>
+    </div>
+
+    <div id="view-chat" class="hidden">
+      <div class="brandmark"><span class="stub">♥</span><span class="wordmark">Dates</span></div>
+      <div class="eyebrow" data-i18n="chat.eyebrow">✦ Private chat ✦</div>
+      <h1 id="chat-headline" data-i18n="chat.headline">Chat</h1>
+      <p class="fineprint" data-i18n="chat.encryptedNote">🔒 End-to-end encrypted — only the two of you can read these messages, not even this app's server.</p>
+      <div class="chat-thread" id="chat-thread">
+        <p class="fineprint" id="chat-waiting" data-i18n="chat.waiting">Waiting for the other person to open the chat for the first time...</p>
+      </div>
+      <div class="chat-input-row">
+        <input type="text" id="chat-input" maxlength="1000" data-i18n-ph="chat.placeholder" placeholder="Type a message..." disabled>
+        <button class="chat-send-btn" id="btn-chat-send" type="button" disabled data-i18n="chat.send">Send</button>
+      </div>
+      <button class="link-btn" id="btn-chat-back" data-i18n="chat.back">← Back</button>
     </div>
 
   </div>
@@ -898,7 +1023,18 @@
 
       "error.eyebrow": "✦ Oops ✦",
       "error.headline": "That invitation isn't valid.",
-      "error.sub": "The link may be incomplete or corrupted. Ask the sender to create a fresh invitation."
+      "error.sub": "The link may be incomplete or corrupted. Ask the sender to create a fresh invitation.",
+
+      "chat.open": "💬 Chat",
+      "chat.eyebrow": "✦ Private chat ✦",
+      "chat.headline": "Chat",
+      "chat.headlineWith": "Chat with {{name}}",
+      "chat.encryptedNote": "🔒 End-to-end encrypted — only the two of you can read these messages, not even this app's server.",
+      "chat.waiting": "Waiting for the other person to open the chat for the first time...",
+      "chat.placeholder": "Type a message...",
+      "chat.send": "Send",
+      "chat.back": "← Back",
+      "chat.sendError": "Couldn't send that — check the connection and try again."
     },
     fr: {
       "welcome.eyebrow": "✦ Bienvenue ✦",
@@ -1048,7 +1184,18 @@
 
       "error.eyebrow": "✦ Oups ✦",
       "error.headline": "Cette invitation n'est pas valide.",
-      "error.sub": "Le lien est peut-être incomplet ou corrompu. Demandez à l'expéditeur de créer une nouvelle invitation."
+      "error.sub": "Le lien est peut-être incomplet ou corrompu. Demandez à l'expéditeur de créer une nouvelle invitation.",
+
+      "chat.open": "💬 Discuter",
+      "chat.eyebrow": "✦ Discussion privée ✦",
+      "chat.headline": "Discussion",
+      "chat.headlineWith": "Discussion avec {{name}}",
+      "chat.encryptedNote": "🔒 Chiffré de bout en bout — seuls vous deux pouvez lire ces messages, même le serveur de l'application ne le peut pas.",
+      "chat.waiting": "En attente que l'autre personne ouvre la discussion pour la première fois...",
+      "chat.placeholder": "Écrire un message...",
+      "chat.send": "Envoyer",
+      "chat.back": "← Retour",
+      "chat.sendError": "Impossible d'envoyer ce message — vérifiez la connexion et réessayez."
     }
   };
 
@@ -1117,7 +1264,7 @@
   $("lang-fr").addEventListener("click", () => setLanguage("fr"));
 
 
-  const views = ["welcome","portal","setup","created","ask","calendar","confirm","declined","error"]
+  const views = ["welcome","portal","setup","created","ask","calendar","confirm","declined","error","chat"]
     .reduce((o, key) => (o[key] = $("view-" + key), o), {});
 
   const fields = {
@@ -1290,6 +1437,227 @@
     }, 4000);
   }
 
+  // ---- Chat: end-to-end encrypted with ECDH (P-256) + AES-256-GCM. ----
+  // Each side generates its own keypair locally and never sends the private
+  // key anywhere. Only public keys and encrypted ciphertext ever reach the
+  // server — it has no way to read message content, by construction.
+  let chatRole = null;     // "sender" | "recipient" — who WE are in this chat
+  let chatSharedKey = null;
+  let chatPollTimer = null;
+  const seenMessageIds = new Set();
+
+  function b64FromBytes(bytes) {
+    let binary = "";
+    bytes.forEach(b => binary += String.fromCharCode(b));
+    return btoa(binary);
+  }
+  function bytesFromB64(b64) {
+    const binary = atob(b64);
+    const bytes = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+    return bytes;
+  }
+
+  function chatStorageKey(id, role, part) {
+    return "dates_chatkey_" + id + "_" + role + "_" + part; // part: "priv" | "pub"
+  }
+
+  async function getOrCreateKeypair(id, role) {
+    const privKey = localStorage.getItem(chatStorageKey(id, role, "priv"));
+    const pubKey = localStorage.getItem(chatStorageKey(id, role, "pub"));
+
+    if (privKey && pubKey) {
+      const privateJwk = JSON.parse(privKey);
+      const publicJwk = JSON.parse(pubKey);
+      const privateKey = await crypto.subtle.importKey(
+        "jwk", privateJwk, { name: "ECDH", namedCurve: "P-256" }, true, ["deriveKey"]
+      );
+      return { privateKey, publicJwk };
+    }
+
+    const pair = await crypto.subtle.generateKey({ name: "ECDH", namedCurve: "P-256" }, true, ["deriveKey"]);
+    const exportedPriv = await crypto.subtle.exportKey("jwk", pair.privateKey);
+    const exportedPub = await crypto.subtle.exportKey("jwk", pair.publicKey);
+    localStorage.setItem(chatStorageKey(id, role, "priv"), JSON.stringify(exportedPriv));
+    localStorage.setItem(chatStorageKey(id, role, "pub"), JSON.stringify(exportedPub));
+    return { privateKey: pair.privateKey, publicJwk: exportedPub };
+  }
+
+  async function deriveSharedKey(myPrivateKey, otherPublicJwk) {
+    const otherPublicKey = await crypto.subtle.importKey(
+      "jwk", otherPublicJwk, { name: "ECDH", namedCurve: "P-256" }, true, []
+    );
+    return crypto.subtle.deriveKey(
+      { name: "ECDH", public: otherPublicKey },
+      myPrivateKey,
+      { name: "AES-GCM", length: 256 },
+      false,
+      ["encrypt", "decrypt"]
+    );
+  }
+
+  async function encryptChatMessage(sharedKey, plaintext) {
+    const iv = crypto.getRandomValues(new Uint8Array(12));
+    const encoded = new TextEncoder().encode(plaintext);
+    const ciphertextBuf = await crypto.subtle.encrypt({ name: "AES-GCM", iv }, sharedKey, encoded);
+    return { iv: b64FromBytes(iv), ciphertext: b64FromBytes(new Uint8Array(ciphertextBuf)) };
+  }
+
+  async function decryptChatMessage(sharedKey, ivB64, ciphertextB64) {
+    const iv = bytesFromB64(ivB64);
+    const ciphertext = bytesFromB64(ciphertextB64);
+    const plainBuf = await crypto.subtle.decrypt({ name: "AES-GCM", iv }, sharedKey, ciphertext);
+    return new TextDecoder().decode(plainBuf);
+  }
+
+  async function apiPublishPublicKey(id, role, publicKeyJwk) {
+    const res = await fetch(API_BASE + "/api/invites/" + id + "/publickey", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ role, publicKeyJwk })
+    });
+    if (!res.ok) throw new Error((await res.json()).error || "Could not set up chat");
+    return res.json();
+  }
+
+  async function apiGetMessages(id) {
+    const res = await fetch(API_BASE + "/api/invites/" + id + "/messages");
+    if (!res.ok) throw new Error((await res.json()).error || "Could not load messages");
+    return res.json();
+  }
+
+  async function apiSendMessage(id, role, iv, ciphertext) {
+    const res = await fetch(API_BASE + "/api/invites/" + id + "/messages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ role, iv, ciphertext })
+    });
+    if (!res.ok) throw new Error((await res.json()).error || "Could not send message");
+    return res.json();
+  }
+
+  function chatTimeLabel(timestamp) {
+    return new Intl.DateTimeFormat(currentLang === "fr" ? "fr-FR" : "en-US", {
+      hour: "numeric", minute: "2-digit"
+    }).format(new Date(timestamp));
+  }
+
+  function appendChatBubble(role, text, timestamp) {
+    const thread = $("chat-thread");
+    const bubble = document.createElement("div");
+    bubble.className = "chat-bubble " + (role === chatRole ? "mine" : "theirs");
+    const textNode = document.createElement("div");
+    textNode.textContent = text;
+    const timeNode = document.createElement("span");
+    timeNode.className = "chat-bubble-time";
+    timeNode.textContent = chatTimeLabel(timestamp);
+    bubble.appendChild(textNode);
+    bubble.appendChild(timeNode);
+    thread.appendChild(bubble);
+    thread.scrollTop = thread.scrollHeight;
+  }
+
+  async function refreshChatMessages(id) {
+    const data = await apiGetMessages(id);
+    const otherKey = chatRole === "sender" ? data.recipientPublicKey : data.senderPublicKey;
+
+    if (!otherKey) {
+      $("chat-waiting").classList.remove("hidden");
+      $("chat-input").disabled = true;
+      $("btn-chat-send").disabled = true;
+      return;
+    }
+
+    if (!chatSharedKey) {
+      const { privateKey } = await getOrCreateKeypair(id, chatRole);
+      chatSharedKey = await deriveSharedKey(privateKey, otherKey);
+      $("chat-waiting").classList.add("hidden");
+      $("chat-input").disabled = false;
+      $("btn-chat-send").disabled = false;
+    }
+
+    for (const msg of data.messages) {
+      if (seenMessageIds.has(msg.id)) continue;
+      seenMessageIds.add(msg.id);
+      try {
+        const plaintext = await decryptChatMessage(chatSharedKey, msg.iv, msg.ciphertext);
+        appendChatBubble(msg.role, plaintext, msg.createdAt);
+      } catch (e) {
+        console.error("Could not decrypt a message:", e.message);
+      }
+    }
+  }
+
+  function stopChatPolling() {
+    if (chatPollTimer) { clearInterval(chatPollTimer); chatPollTimer = null; }
+  }
+
+  async function openChat(id, role, headerName) {
+    currentId = id;
+    chatRole = role;
+    chatSharedKey = null;
+    seenMessageIds.clear();
+    $("chat-thread").innerHTML = "";
+    $("chat-thread").appendChild($("chat-waiting"));
+    $("chat-waiting").classList.remove("hidden");
+    $("chat-input").value = "";
+    $("chat-input").disabled = true;
+    $("btn-chat-send").disabled = true;
+    $("chat-headline").textContent = headerName
+      ? t("chat.headlineWith", { name: headerName })
+      : t("chat.headline");
+
+    show("chat");
+
+    try {
+      const { publicJwk } = await getOrCreateKeypair(id, role);
+      await apiPublishPublicKey(id, role, publicJwk);
+      await refreshChatMessages(id);
+    } catch (e) {
+      console.error("OPEN CHAT ERROR:", e);
+    }
+
+    stopChatPolling();
+    chatPollTimer = setInterval(() => {
+      refreshChatMessages(id).catch(e => console.warn("Chat poll failed:", e.message));
+    }, 3000);
+  }
+
+  async function sendChatMessage() {
+    const input = $("chat-input");
+    const text = input.value.trim();
+    if (!text || !chatSharedKey || !currentId) return;
+
+    input.value = "";
+    $("btn-chat-send").disabled = true;
+
+    try {
+      const { iv, ciphertext } = await encryptChatMessage(chatSharedKey, text);
+      const saved = await apiSendMessage(currentId, chatRole, iv, ciphertext);
+      seenMessageIds.add(saved.id);
+      appendChatBubble(chatRole, text, saved.createdAt);
+    } catch (e) {
+      console.error("SEND MESSAGE ERROR:", e);
+      alert(t("chat.sendError"));
+      input.value = text;
+    } finally {
+      $("btn-chat-send").disabled = false;
+    }
+  }
+
+  $("btn-chat-send").addEventListener("click", sendChatMessage);
+  $("chat-input").addEventListener("keydown", (e) => {
+    if (e.key === "Enter") sendChatMessage();
+  });
+  $("btn-chat-back").addEventListener("click", () => {
+    stopChatPolling();
+    if (chatRole === "recipient" && invite && invite.response) {
+      renderConfirm(invite.response);
+    } else {
+      renderPortal();
+    }
+  });
+
   // ---- Auth ----
   const AUTH_KEY = "dates_auth"; // { token, userId, displayName }
 
@@ -1399,6 +1767,8 @@
   });
 
   $("btn-logout").addEventListener("click", async () => {
+    stopPolling();
+    stopChatPolling();
     await apiLogout();
     clearAuth();
     invite = null;
@@ -1415,7 +1785,7 @@
     show("setup");
   });
   $("btn-back-portal").addEventListener("click", () => renderPortal());
-  $("btn-created-portal").addEventListener("click", () => { stopPolling(); renderPortal(); });
+  $("btn-created-portal").addEventListener("click", () => { stopPolling(); stopChatPolling(); renderPortal(); });
 
   function statusLabel(inv) {
     if (!inv.response) return { text: t("portal.pending"), cls: "pending" };
@@ -1450,6 +1820,18 @@
           </div>
           <div class="invite-card-place">${escapeHtml(inv.place)}</div>
           <span class="invite-card-status ${status.cls}">${status.text}</span>`;
+
+        const chatBtn = document.createElement("button");
+        chatBtn.type = "button";
+        chatBtn.className = "invite-card-chat-btn";
+        chatBtn.textContent = t("chat.open");
+        chatBtn.addEventListener("click", () => {
+          invite = inv;
+          currentId = inv.id;
+          openChat(inv.id, "sender", inv.to);
+        });
+        card.appendChild(chatBtn);
+
         list.appendChild(card);
       });
     } catch (e) {
@@ -1623,8 +2005,13 @@
     location.href = url;
   });
 
+  $("btn-created-chat").addEventListener("click", () => {
+    openChat(currentId, "sender", invite.to);
+  });
+
   $("btn-new").addEventListener("click", () => {
     stopPolling();
+    stopChatPolling();
     Object.values(fields).forEach(f => f.value = "");
     $("in-reminder").value = "0";
     selectedCategory = "date";
@@ -1635,6 +2022,7 @@
 
   function renderAsk(data) {
     const category = CATEGORIES.includes(data.category) ? data.category : "date";
+    const isNeutral = category === "professional";
 
     $("ask-headline").textContent = data.to
       ? t("ask.headline." + category + ".named", { name: data.to })
@@ -1649,11 +2037,19 @@
     $("btn-yes").textContent = t("ask.yesLabel." + category);
     $("btn-no").textContent = t("ask.noLabel." + category);
 
-    $("taunt").textContent = "";
-    $("btn-no").style.left = "68%";
-    $("btn-no").style.top = "50%";
-    $("btn-no").style.transform = "translate(-50%,-50%)";
+    $("decision-zone").classList.toggle("neutral", isNeutral);
 
+    if (isNeutral) {
+      $("btn-no").style.left = "";
+      $("btn-no").style.top = "";
+      $("btn-no").style.transform = "";
+    } else {
+      $("btn-no").style.left = "68%";
+      $("btn-no").style.top = "50%";
+      $("btn-no").style.transform = "translate(-50%,-50%)";
+    }
+
+    $("taunt").textContent = "";
     show("ask");
   }
 
@@ -1784,6 +2180,9 @@
   $("btn-back-ask").addEventListener("click", () => renderAsk(invite));
   $("btn-change-date").addEventListener("click", () => renderCalendar(invite));
   $("btn-reconsider").addEventListener("click", () => renderAsk(invite));
+  $("btn-open-chat").addEventListener("click", () => {
+    openChat(currentId, "recipient", invite.from);
+  });
 
   function loadInvitationFromUrl() {
     const params = new URLSearchParams(location.search);
